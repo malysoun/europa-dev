@@ -13,3 +13,21 @@
 [submodule "src/zenpacks/ZenPacks.zenoss.ZenJMX"]
 	path = src/zenpacks/ZenPacks.zenoss.ZenJMX
 	url = git@github.com:zenoss/ZenPacks.zenoss.ZenJMX
+[submodule "chef/cookbooks/java"]
+	path = chef/cookbooks/java
+	url = https://github.com/opscode-cookbooks/java.git
+[submodule "chef/cookbooks/python"]
+	path = chef/cookbooks/python
+	url = https://github.com/opscode-cookbooks/python.git
+[submodule "chef/cookbooks/rabbitmq"]
+	path = chef/cookbooks/rabbitmq
+	url = https://github.com/opscode-cookbooks/rabbitmq.git
+[submodule "chef/cookbooks/build-essential"]
+	path = chef/cookbooks/build-essential
+	url = https://github.com/opscode-cookbooks/build-essential.git
+[submodule "chef/cookbooks/mysql"]
+	path = chef/cookbooks/mysql
+	url = https://github.com/opscode-cookbooks/mysql.git
+[submodule "chef/cookbooks/memcached"]
+	path = chef/cookbooks/memcached
+	url = https://github.com/opscode-cookbooks/memcached.git
