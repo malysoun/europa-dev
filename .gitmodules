@@ -1,3 +1,15 @@
 [submodule "src/core"]
 	path = src/core
 	url = git@github.com:zenoss/zenoss-prodbin.git
+[submodule "src/zep"]
+	path = src/zep
+	url = git@github.com:zenoss/zenoss-zep
+[submodule "src/protocols"]
+	path = src/protocols
+	url = git@github.com:zenoss/zenoss-protocols
+[submodule "src/utils"]
+	path = src/utils
+	url = git@github.com:zenoss/zenoss-utils
+[submodule "src/zenpacks/ZenPacks.zenoss.ZenJMX"]
+	path = src/zenpacks/ZenPacks.zenoss.ZenJMX
+	url = git@github.com:zenoss/ZenPacks.zenoss.ZenJMX
