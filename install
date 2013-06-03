@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 
 def options():
     parser = ArgumentParser()
-    return parser.parse()
+    return parser.parse_args()
 
 if __name__ == "__main__":
     args = options()
