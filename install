@@ -19,7 +19,7 @@ magenta = _color_func(35)
 cyan = _color_func(36)
 white = _color_func(37)
 
-print os.path.curdir
+print os.path.abspath(os.path.curdir)
 
 if __name__ == "__main__":
     for s in ('blue', 'yellow', 'green', 'red', 'cyan', 'magenta'):
