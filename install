@@ -1,7 +1,8 @@
 #!/usr/bin/env python2.7
 import sys
 import os
-from subprocess import call
+import subprocess
+import platform
 import textwrap
 
 
@@ -32,6 +33,7 @@ except ImportError:
 def _color_func(colorcode):
     return lambda s: '\033[{0}m{1}\033[0m'.format(colorcode, s)
 
+
 grey = _color_func(30)
 red = _color_func(31)
 green = _color_func(32)
@@ -55,14 +57,13 @@ def say(msg):
     for line in wrapped[1:]:
         print "   ", white(line)
 
+
 def warn(msg):
     print
-    print red("Warning") + ":", msg
-    print "Are you sure you want to continue", blue("[")+"y/N"+blue("]"), "? ",
-    ch = getch()
-    print
-    if ch not in "yY":
-        abort("Installation aborted by user")
+    wrapped = textwrap.wrap(msg)
+    print red("Warning") + ":", wrapped[0]
+    for line in wrapped[1:]:
+        print "        ", line
 
 
 def shell(cmd):
@@ -70,11 +71,15 @@ def shell(cmd):
     Run a shell command, printing it first.
     """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
-    call(cmd, shell=True)
+    subprocess.call(cmd, shell=True)
+
+
+def error(msg):
+    print red("Error:"), msg
 
 
 def abort(msg):
-    print red("Error:"), msg
+    error(msg)
     sys.exit(0)
 
 
@@ -85,18 +90,79 @@ def wait():
         abort("Installation aborted by user")
 
 
+def abort_unless(msg=None):
+    print (msg or "Are you sure you want to continue"), blue("[") + "y/N" + blue("]"), "? ",
+    ch = getch()
+    print
+    if ch not in "yY":
+        abort("Installation aborted by user")
+
+
 def git(cmd):
     shell((os.environ.get("GIT") or "git") + " " + cmd)
 
 
+def which(cmd):
+    p = subprocess.Popen(["which", cmd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout, stderr = p.communicate()
+    return stdout
+
+
+def verify(fname, description=None, use_which=True, die=True, warning=True):
+    if use_which:
+        result = bool(which(fname))
+    else:
+        result = os.path.exists(fname)
+    if not result and warning:
+        msg = "{0} is not present.".format(description or fname)
+        (abort if die else warn)(msg)
+    return result
+
+
+def install(pkg):
+    if sys.platform == 'darwin':
+        if not verify("brew", die=False):
+            say("Can't autoinstall {0} without Homebrew. Get it from http://mxcl.github.io/homebrew/")
+        shell("brew install {0}".format(pkg))
+    else:
+        # Assume linux
+        distro, version, ident = platform.linux_distribution()
+        if distro.lower() in ("ubuntu", "debian"):
+            shell("sudo apt-get install {0}".format(pkg))
+        elif distro.lower() in ("centos", "rhel", "fedora"):
+            shell("sudo yum -y install {0}".format(pkg))
+
+
+def install_python(pkg, sudo=False):
+    cmd = "pip install"
+    if not verify("pip", warning=False):
+        cmd = "easy_install"
+        if not verify("easy_install", warning=False):
+            abort("Neither pip nor setuptools is installed.")
+    shell("{0} {1} {2}".format("sudo" if sudo else "", cmd, pkg))
+
+
 if __name__ == "__main__":
-    EUROPA_ROOT = here('europa')
+    EUROPA_ROOT = os.environ.get("EUROPA") or here('europa')
+
+    verify("git")
+    verify("vagrant")
+    verify("VirtualBox")
+
     say("This script will install a Zenoss Europa development environment into {0}".format(EUROPA_ROOT))
     wait()
-
-    if os.path.isdir(here('europa', '.git')):
-        warn("A europa dev environment already exists here! If you continue, it will be deleted.")
+    if os.path.isdir(os.path.join(EUROPA_ROOT, '.git')):
+        warn("A europa dev environment already exists in {0}! If you continue, it will be {1}.".format(
+            EUROPA_ROOT, yellow("ERASED")))
+        abort_unless()
         shell("rm -rf {0}".format(EUROPA_ROOT))
-
     git("clone {0} {1}".format(PUBLIC_REPO, EUROPA_ROOT))
+
+    if not verify("git-flow", die=False):
+        abort_unless("Okay to try to install it?")
+        install("git-flow")
+
+    if not verify("mkvirtualenv", die=False):
+        install_python("virtualenvwrapper", sudo=True)
+
 
