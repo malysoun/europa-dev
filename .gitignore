@@ -4,6 +4,7 @@
 *.so
 
 # Packages
+.vagrant
 *.egg
 *.egg-info
 dist
