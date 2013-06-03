@@ -1,12 +1,13 @@
 #!/usr/bin/env python2.7
 import sys
-import os.path
+import os
 from subprocess import call
 import textwrap
 
+
 PUBLIC_REPO = "git@github.com:zenoss/europa-dev.git"
 
-
+# Need function to get a single keypress from the user
 try:
     # Try Windows
     # noinspection PyUnresolvedReferences
@@ -27,29 +28,44 @@ except ImportError:
         return ch
 
 
+# Define terminal color-printing functions
 def _color_func(colorcode):
     return lambda s: '\033[{0}m{1}\033[0m'.format(colorcode, s)
 
-grey    = _color_func(30)
-red     = _color_func(31)
-green   = _color_func(32)
-yellow  = _color_func(33)
-blue    = _color_func(34)
+grey = _color_func(30)
+red = _color_func(31)
+green = _color_func(32)
+yellow = _color_func(33)
+blue = _color_func(34)
 magenta = _color_func(35)
-cyan    = _color_func(36)
-white   = _color_func(37)
+cyan = _color_func(36)
+white = _color_func(37)
 
+
+# Simple func to get full path relative to PWD
 here = lambda *x: os.path.abspath(os.path.join(os.path.curdir, *x))
 
 
 def say(msg):
+    """
+    Output a message to the console.
+    """
     wrapped = textwrap.wrap(msg)
     print blue("==>"), white(wrapped[0])
     for line in wrapped[1:]:
         print "   ", white(line)
 
+def warn(msg):
+    print yellow("Warning") + ":", msg
+    print "Are you sure you want to continue? [y/N]"
+    if getch() not in "yY":
+        abort("Installation aborted by user")
+
 
 def shell(cmd):
+    """
+    Run a shell command, printing it first.
+    """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
     call(cmd, shell=True)
 
@@ -74,5 +90,10 @@ if __name__ == "__main__":
     EUROPA_ROOT = here('europa')
     say("This script will install a Zenoss Europa development environment into {0}".format(EUROPA_ROOT))
     wait()
+
+    if os.path.isdir(here('europa', '.git')):
+        warn("A europa dev environment already exists here! If you continue, it will be deleted.")
+        shell("rm -rf {0}".format(EUROPA_ROOT))
+
     git("clone {0} {1}".format(PUBLIC_REPO, EUROPA_ROOT))
 
