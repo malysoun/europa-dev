@@ -56,9 +56,12 @@ def say(msg):
         print "   ", white(line)
 
 def warn(msg):
-    print yellow("Warning") + ":", msg
-    print "Are you sure you want to continue? [y/N]"
-    if getch() not in "yY":
+    print
+    print red("Warning") + ":", msg
+    print "Are you sure you want to continue", blue("[")+"y/N"+blue("]"), "? ",
+    ch = getch()
+    print
+    if ch not in "yY":
         abort("Installation aborted by user")
 
 
