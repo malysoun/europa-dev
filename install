@@ -144,7 +144,7 @@ def install_python(pkg, sudo=False):
 
 if __name__ == "__main__":
     EUROPA_ROOT = os.environ.get("EUROPA") or here('europa')
-    BRANCH = os.environ.get("EUROPADEV_BRANCH" or 'master')
+    BRANCH = os.environ.get("EUROPADEV_BRANCH") or "master"
 
     verify("git")
     verify("vagrant")
