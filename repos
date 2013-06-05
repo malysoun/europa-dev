@@ -13,6 +13,5 @@ chef/cookbooks/erlang, https://github.com/opscode-cookbooks/erlang.git
 chef/cookbooks/apt, https://github.com/opscode-cookbooks/apt.git
 chef/cookbooks/yum, https://github.com/opscode-cookbooks/yum.git
 chef/cookbooks/openssl, https://github.com/opscode-cookbooks/openssl.git
-chef/cookbooks/windows, https://github.com/opscode-cookbooks/windows.git
 chef/cookbooks/chef_handler, https://github.com/opscode-cookbooks/chef_handler.git
 chef/cookbooks/runit, https://github.com/opscode-cookbooks/runit.git
