@@ -170,7 +170,7 @@ if __name__ == "__main__":
         install("git-flow")
     
 
-    if not verify("mkvirtualenv", die=False):
+    if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
 
     shell("echo source $(which virtualenvwrapper.sh) >> ~/.bashrc")
