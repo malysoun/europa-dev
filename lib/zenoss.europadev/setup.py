@@ -29,6 +29,7 @@ setup(name='zenoss.europadev',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
-      # -*- Entry points: -*-
+      [console_scripts]
+      git-zen = zenoss.europadev.git:main
       """,
       )
