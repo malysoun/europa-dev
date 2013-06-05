@@ -1,0 +1,17 @@
+src/core, git@github.com:zenoss/zenoss-prodbin.git
+src/zep, git@github.com:zenoss/zenoss-zep
+src/protocols, git@github.com:zenoss/zenoss-protocols
+src/utils, git@github.com:zenoss/zenoss-utils
+src/zenpacks/ZenPacks.zenoss.ZenJMX, git@github.com:zenoss/ZenPacks.zenoss.ZenJMX
+chef/cookbooks/java, git@github.com:zenoss/java.git
+chef/cookbooks/python, git@github.com:zenoss/python.git
+chef/cookbooks/rabbitmq, git@github.com:zenoss/rabbitmq.git
+chef/cookbooks/build-essential, https://github.com/opscode-cookbooks/build-essential.git
+chef/cookbooks/mysql, https://github.com/opscode-cookbooks/mysql.git
+chef/cookbooks/memcached, https://github.com/opscode-cookbooks/memcached.git
+chef/cookbooks/erlang, https://github.com/opscode-cookbooks/erlang.git
+chef/cookbooks/apt, https://github.com/opscode-cookbooks/apt.git
+chef/cookbooks/yum, https://github.com/opscode-cookbooks/yum.git
+chef/cookbooks/openssl, https://github.com/opscode-cookbooks/openssl.git
+chef/cookbooks/chef_handler, https://github.com/opscode-cookbooks/chef_handler.git
+chef/cookbooks/runit, https://github.com/opscode-cookbooks/runit.git
