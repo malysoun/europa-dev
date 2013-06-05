@@ -7,9 +7,12 @@
 .vagrant
 *.egg
 *.egg-info
+bin
 dist
 build
 eggs
+lib
+include
 parts
 var
 sdist
