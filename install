@@ -173,8 +173,8 @@ if __name__ == "__main__":
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
 
-    shell("echo source $(which virtualenvwrapper.sh) >> ~/.bashrc")
-    shell("source $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
+    shell("echo . $(which virtualenvwrapper.sh) >> ~/.bashrc")
+    shell(". $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
     shell("{0}/bin/pip install -e {0}/lib/zenoss.europadev".format(EUROPA_ROOT))
 
 
