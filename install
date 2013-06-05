@@ -71,7 +71,7 @@ def shell(cmd):
     Run a shell command, printing it first.
     """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
-    subprocess.call(cmd, shell=True)
+    subprocess.call(cmd, shell=True, executable="/bin/bash")
 
 
 def error(msg):
