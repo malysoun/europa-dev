@@ -144,6 +144,7 @@ def install_python(pkg, sudo=False):
 
 if __name__ == "__main__":
     EUROPA_ROOT = os.environ.get("EUROPA") or here('europa')
+    BRANCH = os.environ.get("EUROPADEV_BRANCH" or 'master')
 
     verify("git")
     verify("vagrant")
@@ -157,6 +158,8 @@ if __name__ == "__main__":
         abort_unless()
         shell("rm -rf {0}".format(EUROPA_ROOT))
     git("clone {0} {1}".format(PUBLIC_REPO, EUROPA_ROOT))
+    if BRANCH != "master":
+        shell("cd {0} && git checkout {1}".format(EUROPA_ROOT, BRANCH))
 
     if not verify("git-flow", die=False):
         abort_unless("Okay to try to install it?")
@@ -164,5 +167,8 @@ if __name__ == "__main__":
 
     if not verify("mkvirtualenv", die=False):
         install_python("virtualenvwrapper", sudo=True)
+
+    shell("echo source $(which virtualenvwrapper.sh) >> ~/.bashrc")
+    shell("source $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
 
 
