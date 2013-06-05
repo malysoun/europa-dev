@@ -118,6 +118,9 @@ def verify(fname, description=None, use_which=True, die=True, warning=True):
         (abort if die else warn)(msg)
     return result
 
+def success(*args):
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return not p.wait() 
 
 def install(pkg):
     if sys.platform == 'darwin':
@@ -161,9 +164,11 @@ if __name__ == "__main__":
     if BRANCH != "master":
         shell("cd {0} && git checkout {1}".format(EUROPA_ROOT, BRANCH))
 
-    if not verify("git-flow", die=False):
+    if not success("git", "flow", "version"):
+        warn( "git flow is not present.")
         abort_unless("Okay to try to install it?")
         install("git-flow")
+    
 
     if not verify("mkvirtualenv", die=False):
         install_python("virtualenvwrapper", sudo=True)
