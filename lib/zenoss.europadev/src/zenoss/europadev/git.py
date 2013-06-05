@@ -1,4 +1,6 @@
+import os
 import argparse
+from .termutils import shell
 
 
 def update(args):
@@ -20,3 +22,7 @@ def main():
     args = options()
     if args.update:
         update(args)
+
+
+def git(cmd):
+    shell((os.environ.get("GIT") or "git") + " " + cmd)
