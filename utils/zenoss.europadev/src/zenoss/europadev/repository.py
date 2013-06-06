@@ -1,7 +1,7 @@
 import os
 import re
 
-class configuration(object):
+class Configuration(object):
     def __init__(self, local, remote):
         self.local = local
         self.remote = remote
@@ -9,7 +9,7 @@ class configuration(object):
     def __repr__(self):
         return "configuration({0},{1})".format( self.local, self.remote)
 
-class configurations(object):
+class Configurations(object):
     @staticmethod
     def get():
         base_path = os.path.join( __file__, '..', '..', '..', '..', '..', '..')
@@ -21,6 +21,6 @@ class configurations(object):
             for line in f.readlines():
                 line = line.strip()
                 c = re.split( "\s*,\s*", line) 
-                c = configuration( *c)
+                c = Configuration( *c)
                 configs.append( c)
         return configs
