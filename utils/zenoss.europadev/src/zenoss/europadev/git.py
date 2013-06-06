@@ -1,45 +1,71 @@
 import os
+import sys
+import inspect
 import argparse
-from .termutils import shell
+import repository
+from .termutils import execute
 
-def purge(args):
-    #git rid of everything
-    pass
+class command(object):
+    help = None
+    repositories = repository.configurations.get()
 
-def reset(args):
-    #clear restore to head/master on everything
-    pass
+    def git(self, command_name, *args):
+        git = os.environ.get("GIT") or "git"
+        command = [ git, command_name]
+        command.extend( args)
+        return execute( command)
 
-def checkout(args):
-    pass
+    def configure( self, parser):
+        name = self.__class__.__name__
+        cmd_parser = parser.add_parser( name, help=self.help)
+        self.add_help( cmd_parser)
 
-def commit(args):
-    pass
+    def add_help( self, parser):
+        pass
 
-def fetch(args):
-    pass
+    def perform( self, args):
+        pass
 
-def merge(args):
-    pass
+class purge(command):
+    help="remove everything"
 
-def pull(args):
-    pass
+class reset(command):
+    help="reset a repository to master/head"
+
+class fetch(command):
+    help="fetch upstream changes from repo(s)"
+
+class merge(command):
+    help="merge changeset in repo"
+
+class pull(command):
+    help="pull changesets from repo(s)"
+
+class commit(command):
+    help="commit changes to repo(s)"
+
+class checkout(command):
+    help="checkout repo(s)"
+
+class clone(command):
+    help="clone repo(s)"
+    def perform( self, args):
+        for config in self.repositories:
+            self.git( "clone", config.remote, config.local)
+
+def is_command_class( x): return inspect.isclass( x) and issubclass( x, command)
+__module__   = sys.modules[__name__]
+__classes__  = inspect.getmembers(__module__, is_command_class)
+__commands__ = dict( [(n, cls()) for (n, cls) in __classes__])
 
 def options():
     parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(help="Sub-command help")
-
-    update = subparsers.add_parser("update", help="Update repos")
-    update.add_argument("--all", action="store_true", default="False", 
-                        help="Act on all repositories")
-    update.add_argument("repository")
+    subparser = parser.add_subparsers(dest='command', help="Sub-command help")
+    for command in __commands__.values():
+        command.configure( subparser)
     return parser.parse_args()
-
 
 def main():
     args = options()
-    if args.update:
-        pull(args)
-
-def git(cmd):
-    shell((os.environ.get("GIT") or "git") + " " + cmd)
+    command = __commands__[args.command]
+    command.perform( args)
