@@ -7,6 +7,8 @@
 .vagrant
 *.egg
 *.egg-info
+src/
+chef/
 bin
 dist
 build
