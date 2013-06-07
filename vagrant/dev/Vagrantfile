@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "fedora18"
+  config.vm.box     = "fedora18"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../../src", "/zensrc", :owner => "zendev", :group => "zendev"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -52,36 +52,37 @@ Vagrant.configure("2") do |config|
   # path, and data_bags path (all relative to this Vagrantfile), and adding
   # some recipes and/or roles.
   #
-   config.vm.provision :chef_solo do |chef|
-     chef.cookbooks_path = "../../chef/cookbooks"
-     chef.add_recipe "rabbitmq"
-     chef.add_recipe "mysql::server"
-     chef.add_recipe "build-essential"
-     chef.add_recipe "java"
-     chef.add_recipe "maven"
-     chef.add_recipe "memcached"
-     chef.add_recipe "python"
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "../../chef/cookbooks"
+    chef.add_recipe "rabbitmq"
+    chef.add_recipe "mysql::server"
+    chef.add_recipe "build-essential"
+    chef.add_recipe "java"
+    chef.add_recipe "maven"
+    chef.add_recipe "memcached"
+    chef.add_recipe "python"
+    chef.add_recipe "zenoss"
 
-     chef.json = {
-         #:platform_family => "rhel",
-         :maven => {
-            :version => 3
-         },
-         :python => {
-            :version=> "2.7.3"
-         },
-         :java => {
+    chef.json = {
+        :maven  => {
+            :version   => 3,
+            :setup_bin => true
+        },
+        :python => {
+            :version => "2.7.3"
+        },
+        :java   => {
             :install_flavor => "openjdk",
-            :jdk_version => "7"
-         },
+            :jdk_version    => "7"
+        },
 
-         :mysql => {
-             :server_root_password => "zenoss",
-             :server_repl_password => "zenoss",
-             :server_debian_password => "zenoss"
+        :mysql  => {
+            :server_root_password   => "zenoss",
+            :server_repl_password   => "zenoss",
+            :server_debian_password => "zenoss"
         }
-     }
-   end
+    }
+  end
 
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
