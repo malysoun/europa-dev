@@ -62,20 +62,19 @@ def warn(msg):
         print "        ", line
 
 
-def execute(cmd):
+def execute(cmd, cwd=None):
     """
     Execute a command, printing it first.
     """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
-    return subprocess.call(cmd, shell=False)
+    return subprocess.call(cmd, shell=False, cwd=cwd)
 
-
-def shell(cmd):
+def shell(cmd, cwd=None):
     """
     Run a shell command, printing it first.
     """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
-    return subprocess.call(cmd, shell=True)
+    return subprocess.call(cmd, shell=True, cwd=cwd)
 
 
 def error(msg):
