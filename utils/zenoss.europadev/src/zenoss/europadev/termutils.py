@@ -4,16 +4,20 @@ import subprocess
 import platform
 import textwrap
 
+
+
 # Need function to get a single keypress from the user
 try:
     # Try Windows
     # noinspection PyUnresolvedReferences
     import msvcrt
+
     getch = msvcrt.getch
 except ImportError:
     # Everything else
     # noinspection PyUnresolvedReferences
     import tty, termios
+
     def getch():
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
@@ -24,6 +28,8 @@ except ImportError:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
+#enable debug logging
+enable_debug = False
 
 # Define terminal color-printing functions
 def _color_func(colorcode):
@@ -44,36 +50,67 @@ white = _color_func(37)
 here = lambda *x: os.path.abspath(os.path.join(os.path.curdir, *x))
 
 
+def debug(msg):
+    """
+    Output a debug message to the console.
+    """
+    if debug.wrap:
+        wrapped = textwrap.wrap(msg)
+    else:
+        wrapped = [msg]
+
+    if debug.enable:
+        print grey("  >"), yellow(wrapped[0])
+        for line in wrapped[1:]:
+            print "   ", white(line)
+debug.wrap = True
+debug.enable = False
+
 def say(msg):
     """
     Output a message to the console.
     """
-    wrapped = textwrap.wrap(msg)
+    if say.wrap:
+        wrapped = textwrap.wrap(msg)
+    else:
+        wrapped = [msg]
+
     print blue("==>"), white(wrapped[0])
     for line in wrapped[1:]:
         print "   ", white(line)
+debug.wrap = True
 
 
 def warn(msg):
-    print
-    wrapped = textwrap.wrap(msg)
+    if warn.wrap:
+        wrapped = textwrap.wrap(msg)
+    else:
+        wrapped = [msg]
     print red("Warning") + ":", wrapped[0]
     for line in wrapped[1:]:
         print "        ", line
+warn.wrap = True
 
 
 def execute(cmd, cwd=None):
     """
     Execute a command, printing it first.
     """
-    say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
+    msg = ' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd
+    if cwd:
+        msg += " cwd=" + cwd
+    debug(msg);
     return subprocess.call(cmd, shell=False, cwd=cwd)
+
 
 def shell(cmd, cwd=None):
     """
     Run a shell command, printing it first.
     """
-    say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
+    msg = ' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd
+    if cwd:
+        msg += " cwd=" + cwd
+    debug(msg)
     return subprocess.call(cmd, shell=True, cwd=cwd)
 
 
