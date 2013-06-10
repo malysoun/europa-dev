@@ -76,6 +76,9 @@ class Configurations(object):
         results = filter(compose(*funcs), self.values)
         return Configurations(results)
 
+    def reduce(self, func, init):
+        return reduce(func, self.values, init)
+
     @staticmethod
     def get():
         base_path = os.path.join(__file__, '..', '..', '..', '..', '..', '..')

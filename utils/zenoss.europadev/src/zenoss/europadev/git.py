@@ -3,6 +3,8 @@ import sys
 import inspect
 import argparse
 import repository
+import subprocess
+from functools import partial
 from .termutils import execute, shell, say, warn, debug
 
 
@@ -10,6 +12,15 @@ def git(command_name, *args, **kwargs):
     git = os.environ.get("GIT") or "git"
     command = [git, command_name]
     command.extend(args)
+    return execute(command, **kwargs)[0]
+
+
+def git_out(command_name, *args, **kwargs):
+    """  run git and return process stdout """
+    git = os.environ.get("GIT") or "git"
+    command = [git, command_name]
+    command.extend(args)
+    kwargs["stdout"] = subprocess.PIPE
     return execute(command, **kwargs)
 
 
@@ -25,6 +36,16 @@ class command(object):
         cmd_parser = parser.add_parser(self.name(), help=self.help)
         self.add_help(cmd_parser)
 
+    def get_branch(self, path):
+        return git_out("rev-parse", "--abbrev-ref", "HEAD", cwd=path)[1][0].strip()
+
+    def get_untracked_changes(self, path):
+        return git_out("ls-files", "--other", "--exclude-standard", cwd=path)[1]
+
+    def has_untracked_changes(self, path):
+        untracked_changes = self.get_untracked_changes(path)
+        return 1 if len(untracked_changes) > 0 else 0
+
     def has_unstaged_changes(self, path):
         return git("diff-files", "--quiet", cwd=path)
 
@@ -39,6 +60,9 @@ class command(object):
             return True
 
         if self.has_uncommitted_changes(path):
+            return True
+
+        if self.has_untracked_changes(path):
             return True
 
         return False
@@ -58,78 +82,125 @@ class purge(command):
             "-f", "--force", dest="force", action="store_true", default=False,
             help="force local repository deletion, even when changes exist")
 
+    def execute(self, force, value, config):
+        result = 0
+        path = config.localpath()
+        if force or not self.has_changes(path):
+            say("Removing: {0}".format(config.rootpath()))
+            result = shell(" ".join(["rm", "-rf", path]))
+        else:
+            warn("Not removing: clone has changes: {0}".format(path))
+        return value if result == 0 else 1
+
     def perform(self, args):
-        retcode = 0
+        execute = partial(self.execute, args.force)
         configs = self.repositories.exist()
-        for config in configs:
-            path = config.localpath()
-            if args.force or not self.has_changes(path):
-                say( "Removing: {0}".format( config.rootpath()))
-                shell(" ".join(["rm", "-rf", path]))
-            else:
-                warn("Not removing: clone has changes: {0}".format(path))
-
-        return retcode
-
-
-class reset(command):
-    help = "reset repositories"
+        return configs.reduce(execute, 0)
 
 
 class fetch(command):
     help = "fetch upstream changes from repo(s)"
 
+    def add_help(self, parser):
+        parser.add_argument(
+            "--all", dest="all", action="store_true", default=False,
+            help="fetch all remotes")
 
-class merge(command):
-    help = "merge changeset in repo"
+    def execute(self, flags, value, config):
+        say("Git Fetch {0}".format(config.rootpath()))
+        result = git("fetch", *flags, cwd=config.localpath())
+        print
+        return value if result == 0 else 1
+
+    def perform(self, args):
+        configs = self.repositories.exist()
+        flags = []
+        if args.all:
+            flags.append("--all")
+        func = partial(self.execute, flags)
+        return configs.reduce(func, 0)
 
 
 class pull(command):
     help = "pull changesets into local repo(s)"
 
+    def execute(self, value, config):
+        say("Git Pull {0}".format(config.rootpath()))
+        result = git("pull", cwd=config.localpath())
+        print
+        return value if result == 0 else 1
+
     def perform(self, args):
-        retcode = 0
         configs = self.repositories.exist()
-        for config in configs:
-            result = git("pull", cwd=config.localpath())
-            retcode = retcode if result == 0 else result
-        return retcode
+        return configs.reduce(self.execute, 0)
 
 
 class checkout(command):
     help = "checkout repo(s)"
 
+    def add_help(self, parser):
+        parser.add_argument("branch", help="branch name to checkout")
 
-class commit(command):
-    help = "commit changes to repo(s)"
-
-
-class status(command):
-    help = "print status summary for repo(s)"
+    def execute(self, branch, value, config):
+        say("Git Checkout {0} in {1}".format(branch, config.rootpath()))
+        result = git("checkout", branch, cwd=config.localpath())
+        print
+        return value if result == 0 else 1
 
     def perform(self, args):
-        retcode = 0
         configs = self.repositories.exist()
-        for config in configs:
-            path = config.localpath()
-            say("Git Status {0}".format(config.rootpath()))
-            result = git("status", cwd=path)
-            retcode = retcode if result == 0 else result
-            print
-
-        return retcode
+        func = partial(self.execute, args.branch)
+        return configs.reduce(func, 0)
 
 
 class clone(command):
     help = "clone repo(s)"
 
-    def perform( self, args):
-        retcode = 0
-        for config in  self.repositories.not_exist():
-            say( "Cloning {0} -> {1}".format( config.remotepath(), config.rootpath()))
-            result = git("clone", config.remote, config.localpath())
-            retcode = retcode if result == 0 else result
-        return retcode
+    def execute(self, value, config):
+        say("Git Clone {0} -> {1}".format(config.remotepath(), config.rootpath()))
+        result = git("clone", config.remote, config.localpath())
+        return value if result == 0 else 1
+
+    def perform(self, args):
+        configs = self.repositories.not_exist()
+        return configs.reduce(self.execute, 0)
+
+
+class status(command):
+    help = "print status summary for repo(s)"
+
+    def execute(self, value, config):
+        path = config.localpath()
+        say("Git Status {0}".format(config.rootpath()))
+        result = git("status", cwd=path)
+        print
+        return value if result == 0 else 1
+
+    def perform(self, args):
+        configs = self.repositories.exist()
+        return configs.reduce(self.execute, 0)
+
+
+class xstatus(command):
+    help = "print a status summary for repo(s)"
+    formatter = "{:<45} {:<10} {:<11} {:<8} {:<9} {}"
+
+    #path, repo, branch, untracked, tracked, unstaged,
+    def execute(self, value, config):
+        path = config.localpath()
+        rpath = config.remotepath()
+        branch = self.get_branch( path)
+        changes = self.has_uncommitted_changes(path)
+        unstaged = self.has_unstaged_changes(path)
+        untracked = self.has_untracked_changes(path)
+        print self.formatter.format( config.rootpath(), branch, changes, unstaged, untracked, rpath)
+        return 0
+
+    def perform(self, args):
+        header = ("Path", "Branch", "Uncommitted", "Unstaged", "Untracked", "Repo")
+        print self.formatter.format( *header)
+        configs = self.repositories.exist()
+        return configs.reduce(self.execute, 0)
 
 
 def is_command_class( x):

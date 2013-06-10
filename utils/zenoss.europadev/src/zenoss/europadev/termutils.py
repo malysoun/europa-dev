@@ -92,16 +92,22 @@ def warn(msg):
 warn.wrap = True
 
 
-def execute(cmd, cwd=None):
+def execute(cmd, **kwargs):
     """
     Execute a command, printing it first.
     """
-    msg = ' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd
-    if cwd:
-        msg += " cwd=" + cwd
-    debug(msg);
-    return subprocess.call(cmd, shell=False, cwd=cwd)
+    process = subprocess.Popen( cmd, **kwargs)
+    debug("{0} {1}".format( cmd, kwargs))
+    process.wait()
 
+    stdout = []
+    if process.stdout:
+        stdout = process.stdout.readlines()
+
+    stderr = []
+    if process.stderr:
+        stderr = process.stderr.readlines()
+    return process.returncode, stdout, stderr
 
 def shell(cmd, cwd=None):
     """
