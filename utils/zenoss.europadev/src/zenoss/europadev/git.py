@@ -5,7 +5,7 @@ import argparse
 import repository
 import subprocess
 from functools import partial
-from .termutils import execute, shell, say, warn, debug
+from .termutils import *
 
 
 def git(command_name, *args, **kwargs):
@@ -167,7 +167,7 @@ class clone(command):
 
 
 class status(command):
-    help = "print status summary for repo(s)"
+    help = "print status for repo(s)"
 
     def execute(self, value, config):
         path = config.localpath()
@@ -189,16 +189,17 @@ class xstatus(command):
     def execute(self, value, config):
         path = config.localpath()
         rpath = config.remotepath()
-        branch = self.get_branch( path)
+        branch = self.get_branch(path)
         changes = self.has_uncommitted_changes(path)
         unstaged = self.has_unstaged_changes(path)
         untracked = self.has_untracked_changes(path)
-        print self.formatter.format( config.rootpath(), branch, changes, unstaged, untracked, rpath)
-        return 0
+
+        print self.formatter.format(config.rootpath(), branch, changes, unstaged, untracked, rpath)
+        return value
 
     def perform(self, args):
         header = ("Path", "Branch", "Uncommitted", "Unstaged", "Untracked", "Repo")
-        print self.formatter.format( *header)
+        print self.formatter.format(*header)
         configs = self.repositories.exist()
         return configs.reduce(self.execute, 0)
 
@@ -218,7 +219,7 @@ def options():
     parser.add_argument("-d", "--debug", dest="debug", default=False, action="store_true",
                         help="enable detailed debug logging")
     subparser = parser.add_subparsers(dest='command', help="Sub-command help")
-    for command in __commands__.values():
+    for command in sorted(__commands__.values()):
         command.configure(subparser)
     args = parser.parse_args()
     debug.enable = args.debug
