@@ -181,6 +181,20 @@ class status(command):
         return configs.reduce(self.execute, 0)
 
 
+class diff(command):
+    help = "print diff for repo(s)"
+
+    def execute(self, value, config):
+        path = config.localpath()
+        say("Git Diff {0}".format(config.rootpath()))
+        result = git("diff", cwd=path)
+        print
+        return value if result == 0 else 1
+
+    def perform(self, args):
+        configs = self.repositories.exist()
+        return configs.reduce(self.execute, 0)
+
 class xstatus(command):
     help = "print a status summary for repo(s)"
     formatter = "{:<45} {:<10} {:<11} {:<8} {:<9} {}"
