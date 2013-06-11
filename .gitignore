@@ -8,11 +8,12 @@
 .vagrant
 *.egg
 *.egg-info
-src/
-chef/
+src
+chef
 bin
 dist
 build
+private
 eggs
 lib
 include
