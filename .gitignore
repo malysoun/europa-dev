@@ -8,20 +8,24 @@
 .vagrant
 *.egg
 *.egg-info
-src
-chef
-bin
-dist
-build
-private
 eggs
-lib
-include
 parts
-var
 sdist
 develop-eggs
 .installed.cfg
+
+# Paths
+yum/
+
+/bin/
+/chef/
+/include/
+/lib/
+/src/
+/var/
+/dist/
+/build/
+/private/
 
 # Installer logs
 pip-log.txt
