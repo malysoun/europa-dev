@@ -161,13 +161,7 @@ def clone_europa(name, root, repository, branch):
 if __name__ == "__main__":
     EUROPA_ROOT = os.environ.get("EUROPA") or here('europa')
     BRANCH = os.environ.get("EUROPADEV_BRANCH") or "master"
-
-    EUROPAPRIVATE_ROOT = None
-    if "EUROPAPRIVATE" in os.environ:
-        EUROPAPRIVATE_ROOT = os.environ.get("EUROPAPRIVATE")
-        EUROPAPRIVATE_ROOT = EUROPAPRIVATE_ROOT.strip()
-        if len( EUROPAPRIVATE_ROOT) <= 0:
-            EUROPAPRIVATE_ROOT = "europa-private"
+    EUROPAPRIVATE = "EUROPAPRIVATE" in os.environ
 
     verify("git")
     verify("vagrant")
@@ -176,10 +170,11 @@ if __name__ == "__main__":
     say("Installing a Zenoss development environment into {0}".format(EUROPA_ROOT))
     wait()
     clone_europa( "europa", EUROPA_ROOT, PUBLIC_REPO, BRANCH)
-    if EUROPAPRIVATE_ROOT:
-        say("Installing a Zenoss private development environment into {0}".format(EUROPAPRIVATE_ROOT))
+    if EUROPAPRIVATE:
+        europa_private_path = os.path.join( EUROPA_ROOT, "private")
+        say("Installing a Zenoss private development environment into {0}".format(europa_private_path))
         wait()
-        clone_europa( "europa private", EUROPAPRIVATE_ROOT, PRIVATE_REPO, BRANCH)
+        clone_europa( "europa private", europa_private_path, PRIVATE_REPO, BRANCH)
 
     if not success("git", "flow", "version"):
         warn( "git flow is not present.")
