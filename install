@@ -7,6 +7,7 @@ import textwrap
 
 
 PUBLIC_REPO = "git@github.com:zenoss/europa-dev.git"
+PRIVATE_REPO = "git@github.com:zenoss/europa-dev-internal.git"
 
 # Need function to get a single keypress from the user
 try:
@@ -145,36 +146,49 @@ def install_python(pkg, sudo=False):
     shell("{0} {1} {2}".format("sudo" if sudo else "", cmd, pkg))
 
 
+def clone_europa(name, root, repository, branch):
+    dotgit = os.path.join(root, '.git')
+    if os.path.isdir(dotgit):
+        warn("A {1} dev environment already exists in {0}! If you continue, it will be {1}.".format(
+            name, root , yellow("ERASED")))
+        abort_unless()
+        shell("rm -rf {0}".format(root))
+    git("clone {0} {1}".format(repository, root))
+
+    if branch != "master":
+        shell("cd {0} && git checkout {1}".format(root, branch))
+
 if __name__ == "__main__":
     EUROPA_ROOT = os.environ.get("EUROPA") or here('europa')
     BRANCH = os.environ.get("EUROPADEV_BRANCH") or "master"
+
+    EUROPAPRIVATE_ROOT = None
+    if "EUROPAPRIVATE" in os.environ:
+        EUROPAPRIVATE_ROOT = os.environ.get("EUROPAPRIVATE")
+        EUROPAPRIVATE_ROOT = EUROPAPRIVATE_ROOT.strip()
+        if len( EUROPAPRIVATE_ROOT) <= 0:
+            EUROPAPRIVATE_ROOT = "europa-private"
 
     verify("git")
     verify("vagrant")
     verify("VirtualBox")
 
-    say("This script will install a Zenoss Europa development environment into {0}".format(EUROPA_ROOT))
+    say("Installing a Zenoss development environment into {0}".format(EUROPA_ROOT))
     wait()
-    if os.path.isdir(os.path.join(EUROPA_ROOT, '.git')):
-        warn("A europa dev environment already exists in {0}! If you continue, it will be {1}.".format(
-            EUROPA_ROOT, yellow("ERASED")))
-        abort_unless()
-        shell("rm -rf {0}".format(EUROPA_ROOT))
-    git("clone {0} {1}".format(PUBLIC_REPO, EUROPA_ROOT))
-    if BRANCH != "master":
-        shell("cd {0} && git checkout {1}".format(EUROPA_ROOT, BRANCH))
+    clone_europa( "europa", EUROPA_ROOT, PUBLIC_REPO, BRANCH)
+    if EUROPAPRIVATE_ROOT:
+        say("Installing a Zenoss private development environment into {0}".format(EUROPAPRIVATE_ROOT))
+        wait()
+        clone_europa( "europa private", EUROPAPRIVATE_ROOT, PRIVATE_REPO, BRANCH)
 
     if not success("git", "flow", "version"):
         warn( "git flow is not present.")
         abort_unless("Okay to try to install it?")
         install("git-flow")
     
-
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
 
     shell("echo . $(which virtualenvwrapper.sh) >> ~/.bashrc")
     shell(". $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
     shell("{0}/bin/pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
-
-
