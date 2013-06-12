@@ -26,13 +26,16 @@ def git_out(command_name, *args, **kwargs):
 
 class command(object):
     """ base git-command object """
+    # use the class name
+    cmd = None
     help = None
     repositories = repository.Configurations.get()
 
     def name(self):
-        return self.__class__.__name__
+        return self.cmd if self.cmd else self.__class__.__name__
 
     def configure( self, parser):
+
         cmd_parser = parser.add_parser(self.name(), help=self.help)
         self.add_help(cmd_parser)
 
@@ -195,9 +198,10 @@ class diff(command):
         configs = self.repositories.exist()
         return configs.reduce(self.execute, 0)
 
+
 class xstatus(command):
     help = "print a status summary for repo(s)"
-    formatter = "{:<45} {:<10} {:<11} {:<8} {:<9} {}"
+    __formatter = "{:<45} {:<10} {:<11} {:<8} {:<9} {}"
 
     #path, repo, branch, untracked, tracked, unstaged,
     def execute(self, value, config):
@@ -208,12 +212,32 @@ class xstatus(command):
         unstaged = self.has_unstaged_changes(path)
         untracked = self.has_untracked_changes(path)
 
-        print self.formatter.format(config.rootpath(), branch, changes, unstaged, untracked, rpath)
+        print self.__formatter.format(config.rootpath(), branch, changes, unstaged, untracked, rpath)
         return value
 
     def perform(self, args):
         header = ("Path", "Branch", "Uncommitted", "Unstaged", "Untracked", "Repo")
-        print self.formatter.format(*header)
+        print self.__formatter.format(*header)
+        configs = self.repositories.exist()
+        return configs.reduce(self.execute, 0)
+
+
+class lsfiles(command):
+    cmd = "ls-files"
+    help = "print ls-files for repo(s)"
+
+    def execute(self, value, config):
+        results = git_out("ls-files", cwd=config.localpath())
+        if results[0] != 0 or value != 0:
+            return 1
+
+        files = results[1]
+        files = [os.path.join(config.rootpath(), file) for file in files]
+        for file in files:
+            print file.strip()
+        return 0
+
+    def perform(self, args):
         configs = self.repositories.exist()
         return configs.reduce(self.execute, 0)
 
@@ -224,8 +248,8 @@ def is_command_class( x):
 
 __module__ = sys.modules[__name__]
 __classes__ = inspect.getmembers(__module__, is_command_class)
-__commands__ = dict([(n, cls()) for (n, cls) in __classes__])
-del __commands__['command']
+__classes__ = [cls() for (cls_name, cls) in __classes__ if cls_name != "command"]
+__commands__ = dict([(cls.name(), cls) for cls in __classes__])
 
 
 def options():
