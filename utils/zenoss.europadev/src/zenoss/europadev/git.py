@@ -36,7 +36,6 @@ class command(object):
         return self.cmd if self.cmd else self.__class__.__name__
 
     def configure( self, parser):
-
         cmd_parser = parser.add_parser(self.name(), help=self.help)
         self.add_help(cmd_parser)
 
@@ -211,6 +210,9 @@ class xstatus(command):
     help = "print a status summary for repo(s)"
     __formatter = "{:<45} {:<10} {:^11} {:^8} {:^9} {}"
 
+    def add_help( self, parser):
+        pass
+
     #path, repo, branch, untracked, tracked, unstaged,
     def execute(self, summaries, config):
         path = config.localpath()
@@ -233,6 +235,7 @@ class xstatus(command):
         summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]), reverse=True)
         for summary in summaries:
             print self.__formatter.format(*summary)
+
 
 class lsfiles(command):
     cmd = "ls-files"
