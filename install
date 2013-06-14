@@ -187,3 +187,4 @@ if __name__ == "__main__":
     shell("echo . $(which virtualenvwrapper.sh) >> ~/.bashrc")
     shell(". $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
     shell("{0}/bin/pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
+    shell("{0}/bin/git-zen clone".format(EUROPA_ROOT))
