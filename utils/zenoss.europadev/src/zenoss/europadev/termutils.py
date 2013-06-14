@@ -63,8 +63,11 @@ def debug(msg):
         print grey("  >"), yellow(wrapped[0])
         for line in wrapped[1:]:
             print "   ", white(line)
+
+
 debug.wrap = True
 debug.enable = False
+
 
 def say(msg):
     """
@@ -78,6 +81,8 @@ def say(msg):
     print blue("==>"), white(wrapped[0])
     for line in wrapped[1:]:
         print "   ", white(line)
+
+
 debug.wrap = True
 
 
@@ -89,6 +94,8 @@ def warn(msg):
     print red("Warning") + ":", wrapped[0]
     for line in wrapped[1:]:
         print "        ", line
+
+
 warn.wrap = True
 
 
@@ -96,9 +103,8 @@ def execute(cmd, **kwargs):
     """
     Execute a command, printing it first.
     """
-    process = subprocess.Popen( cmd, **kwargs)
-    debug("{0} {1}".format( cmd, kwargs))
-    process.wait()
+    process = subprocess.Popen(cmd, **kwargs)
+    debug("{0} {1}".format(cmd, kwargs))
 
     stdout = []
     if process.stdout:
@@ -107,7 +113,10 @@ def execute(cmd, **kwargs):
     stderr = []
     if process.stderr:
         stderr = process.stderr.readlines()
+
+    process.wait()
     return process.returncode, stdout, stderr
+
 
 def shell(cmd, cwd=None):
     """

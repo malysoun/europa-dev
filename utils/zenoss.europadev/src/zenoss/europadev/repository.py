@@ -11,9 +11,9 @@ def compose(*functions):
 @total_ordering
 class Configuration(object):
     def __init__(self, root, local, remote):
-        self.root = root
-        self.local = local
-        self.remote = remote
+        self.__root = root
+        self.__local = local
+        self.__remote = remote
 
     def __repr__(self):
         t = self.tuple()
@@ -26,21 +26,26 @@ class Configuration(object):
         return self.tuple() < that.tuple()
 
     def tuple(self):
-        return self.root, self.local, self.remote
+        return self.__root, self.__local, self.__remote
 
     def exists(self):
         """ Does the local path exists """
         return os.path.exists(self.localpath())
 
+    def root( self):
+        """ EUROPA_ROOT """
+        return self.__root
+
     def rootpath( self):
         """ Path relative to EUROPA_ROOT """
-        return self.local
+        return self.__local
 
     def localpath( self):
-        return os.path.join(self.root, self.local)
+        """ complete local path """
+        return os.path.join(self.__root, self.__local)
 
     def remotepath( self):
-        return self.remote
+        return self.__remote
 
 
 @total_ordering

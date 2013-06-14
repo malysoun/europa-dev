@@ -2,8 +2,9 @@ import os
 import sys
 import inspect
 import argparse
-import repository
 import subprocess
+import repository
+from repository import Configuration
 from functools import partial
 from .termutils import *
 
@@ -26,11 +27,13 @@ def git_out(command_name, *args, **kwargs):
 
 class command(object):
     """ base git-command object """
+    # use the class name
+    cmd = None
     help = None
     repositories = repository.Configurations.get()
 
     def name(self):
-        return self.__class__.__name__
+        return self.cmd if self.cmd else self.__class__.__name__
 
     def configure( self, parser):
         cmd_parser = parser.add_parser(self.name(), help=self.help)
@@ -42,16 +45,16 @@ class command(object):
     def get_untracked_changes(self, path):
         return git_out("ls-files", "--other", "--exclude-standard", cwd=path)[1]
 
+    def has_staged_changes( self, path):
+        """ args for testing if a local git repository has changes """
+        return git("diff-index", "--cached", "--quiet", "HEAD", "--", cwd=path)
+
+    def has_unstaged_changes(self, path):
+        return git("diff-files", "--quiet", "--", cwd=path)
+
     def has_untracked_changes(self, path):
         untracked_changes = self.get_untracked_changes(path)
         return 1 if len(untracked_changes) > 0 else 0
-
-    def has_unstaged_changes(self, path):
-        return git("diff-files", "--quiet", cwd=path)
-
-    def has_uncommitted_changes( self, path):
-        """ args for testing if a local git repository has changes """
-        return git("diff-index", "--quiet", "HEAD", "--", cwd=path)
 
     def has_changes( self, path):
         """ test if a local git repository has changes """
@@ -59,7 +62,7 @@ class command(object):
         if self.has_unstaged_changes(path):
             return True
 
-        if self.has_uncommitted_changes(path):
+        if self.has_staged_changes(path):
             return True
 
         if self.has_untracked_changes(path):
@@ -167,7 +170,12 @@ class clone(command):
 
 
 class status(command):
-    help = "print status for repo(s)"
+    help = "print status for cloned repo(s) with changes"
+
+    def add_help(self, parser):
+        parser.add_argument(
+            "-a", "--all", dest="all", action="store_true", default=False,
+            help="show status for all repos including unchanged repos")
 
     def execute(self, value, config):
         path = config.localpath()
@@ -178,6 +186,8 @@ class status(command):
 
     def perform(self, args):
         configs = self.repositories.exist()
+        if not args.all:
+            configs = configs.filter(self.has_changes, Configuration.localpath)
         return configs.reduce(self.execute, 0)
 
 
@@ -195,25 +205,54 @@ class diff(command):
         configs = self.repositories.exist()
         return configs.reduce(self.execute, 0)
 
+
 class xstatus(command):
     help = "print a status summary for repo(s)"
-    formatter = "{:<45} {:<10} {:<11} {:<8} {:<9} {}"
+    __formatter = "{:<45} {:<10} {:^11} {:^8} {:^9} {}"
+
+    def add_help( self, parser):
+        pass
 
     #path, repo, branch, untracked, tracked, unstaged,
-    def execute(self, value, config):
+    def execute(self, summaries, config):
         path = config.localpath()
         rpath = config.remotepath()
         branch = self.get_branch(path)
-        changes = self.has_uncommitted_changes(path)
-        unstaged = self.has_unstaged_changes(path)
-        untracked = self.has_untracked_changes(path)
+        changes = "X" if self.has_staged_changes(path) else "-"
+        unstaged = "X" if self.has_unstaged_changes(path) else "-"
+        untracked = "X" if self.has_untracked_changes(path) else "-"
 
-        print self.formatter.format(config.rootpath(), branch, changes, unstaged, untracked, rpath)
-        return value
+        summary = (config.rootpath(), branch, changes, unstaged, untracked, rpath)
+        summaries.append(summary)
+        return summaries
 
     def perform(self, args):
-        header = ("Path", "Branch", "Uncommitted", "Unstaged", "Untracked", "Repo")
-        print self.formatter.format(*header)
+        header = ("Path", "Branch", "Staged", "Unstaged", "Untracked", "Repo")
+        print self.__formatter.format(*header)
+        configs = self.repositories.exist()
+        summaries = configs.reduce(self.execute, [])
+        #bring the repos with changes to the top
+        summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]), reverse=True)
+        for summary in summaries:
+            print self.__formatter.format(*summary)
+
+
+class lsfiles(command):
+    cmd = "ls-files"
+    help = "print ls-files for repo(s)"
+
+    def execute(self, value, config):
+        results = git_out("ls-files", cwd=config.localpath())
+        if results[0] != 0 or value != 0:
+            return 1
+
+        files = results[1]
+        files = [os.path.join(config.rootpath(), file) for file in files]
+        for file in files:
+            print file.strip()
+        return 0
+
+    def perform(self, args):
         configs = self.repositories.exist()
         return configs.reduce(self.execute, 0)
 
@@ -224,8 +263,8 @@ def is_command_class( x):
 
 __module__ = sys.modules[__name__]
 __classes__ = inspect.getmembers(__module__, is_command_class)
-__commands__ = dict([(n, cls()) for (n, cls) in __classes__])
-del __commands__['command']
+__classes__ = [cls() for (cls_name, cls) in __classes__ if cls_name != "command"]
+__commands__ = dict([(cls.name(), cls) for cls in __classes__])
 
 
 def options():
