@@ -24,9 +24,9 @@ Vagrant.configure("2") do |config|
   # your network.
   # config.vm.network :public_network
 
-  config.vm.synced_folder "yum", "/var/cache/yum", 
-                          :extra => 'dmode=777,fmode=777',
-                          :nfs => true
+  #config.vm.synced_folder "yum", "/var/cache/yum", 
+  #                        :extra => 'dmode=777,fmode=777',
+  #                        :nfs => true
 
   config.vm.synced_folder "../../src", "/zensrc", 
                           :extra => 'dmode=775,fmode=775',
