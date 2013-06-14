@@ -110,7 +110,7 @@ class fetch(command):
             help="fetch all remotes")
 
     def execute(self, flags, value, config):
-        say("Git Fetch {0}".format(config.rootpath()))
+        say("git fetch {0}".format(config.rootpath()))
         result = git("fetch", *flags, cwd=config.localpath())
         print
         return value if result == 0 else 1
@@ -128,7 +128,7 @@ class pull(command):
     help = "pull changesets into local repo(s)"
 
     def execute(self, value, config):
-        say("Git Pull {0}".format(config.rootpath()))
+        say("git pull {0}".format(config.rootpath()))
         result = git("pull", cwd=config.localpath())
         print
         return value if result == 0 else 1
@@ -145,7 +145,7 @@ class checkout(command):
         parser.add_argument("branch", help="branch name to checkout")
 
     def execute(self, branch, value, config):
-        say("Git Checkout {0} in {1}".format(branch, config.rootpath()))
+        say("git checkout {0} in {1}".format(branch, config.rootpath()))
         result = git("checkout", branch, cwd=config.localpath())
         print
         return value if result == 0 else 1
@@ -160,8 +160,8 @@ class clone(command):
     help = "clone repo(s)"
 
     def execute(self, value, config):
-        say("Git Clone {0} -> {1}".format(config.remotepath(), config.rootpath()))
-        result = git("clone", config.remote, config.localpath())
+        say("git clone {0} -> {1}".format(config.remotepath(), config.rootpath()))
+        result = git("clone", config.remotepath(), config.localpath())
         return value if result == 0 else 1
 
     def perform(self, args):
@@ -179,8 +179,8 @@ class status(command):
 
     def execute(self, value, config):
         path = config.localpath()
-        say("Git Status {0}".format(config.rootpath()))
-        result = git("status", cwd=path)
+        say("git status {0} -s".format(config.rootpath()))
+        result = git("status", "-s", cwd=path)
         print
         return value if result == 0 else 1
 
@@ -196,7 +196,7 @@ class diff(command):
 
     def execute(self, value, config):
         path = config.localpath()
-        say("Git Diff {0}".format(config.rootpath()))
+        say("git diff {0}".format(config.rootpath()))
         result = git("diff", cwd=path)
         print
         return value if result == 0 else 1
@@ -228,13 +228,22 @@ class xstatus(command):
 
     def perform(self, args):
         header = ("Path", "Branch", "Staged", "Unstaged", "Untracked", "Repo")
-        print self.__formatter.format(*header)
+        header = self.__formatter.format(*header)
+        print white(header)
+        print "=" * (len(header) + 40)
         configs = self.repositories.exist()
         summaries = configs.reduce(self.execute, [])
-        #bring the repos with changes to the top
-        summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]), reverse=True)
+        # bring the repos with changes to the top
+        summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]), 
+                reverse=True)
         for summary in summaries:
-            print self.__formatter.format(*summary)
+            s = self.__formatter.format(*summary)
+            if 'X' == summary[2]:
+                print green(s)
+            elif 'X' == summary[3]:
+                print blue(s)
+            else:
+                print s
 
 
 class lsfiles(command):
