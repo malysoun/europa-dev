@@ -188,7 +188,7 @@ if __name__ == "__main__":
         install_python("virtualenvwrapper", sudo=True)
 
     shell("echo . $(which virtualenvwrapper.sh) >> ~/.bash_profile")
-    shell(". $(which virtualenvwrapper.sh) && mkvirtualenv europa -a " + EUROPA_ROOT)
+    shell(". $(which virtualenvwrapper.sh) && mkvirtualenv --clear europa -a " + EUROPA_ROOT)
     
     shell_in_europa("pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
     shell_in_europa("git zen clone".format(EUROPA_ROOT))
