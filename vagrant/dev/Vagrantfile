@@ -43,6 +43,7 @@ Vagrant.configure("2") do |config|
     # Use VBoxManage to customize the VM. For example to change memory:
     vb.customize ["modifyvm", :id, "--memory", "4096", "--cpus", "4"]
   end
+
   config.vm.provider :vmware_fusion do |fusion,override|
       override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_fusion.box"
       fusion.vmx['memsize'] = 4096
@@ -50,6 +51,15 @@ Vagrant.configure("2") do |config|
       fusion.vmx['displayName'] = 'europa dev'
       fusion.vmx['annotation'] = "a general vagrant vm"
   end
+
+  config.vm.provider :vmware_workstation do |workstation,override|
+      override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_workstation.box"
+      workstation.vmx['memsize'] = 4096
+      workstation.vmx['numvcpus'] = 4
+      workstation.vmx['displayName'] = 'europa dev'
+      workstation.vmx['annotation'] = "a general vagrant vm"
+  end
+
   #
   # View the documentation for the provider you're using for more
   # information on available options.
