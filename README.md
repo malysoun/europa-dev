@@ -63,7 +63,7 @@ Once you've created your environment, simply create a fork of europa-dev in
 GitHub, then execute:
 
     $ git remote set-url origin https://github.com/myusername/europa-dev
-    $ git remote add origin https://github.com/zenoss/europa-dev
+    $ git remote add upstream https://github.com/zenoss/europa-dev
 
 If you have changes that would be useful for everyone, please make a pull
 request to get it into the upstream repository.
