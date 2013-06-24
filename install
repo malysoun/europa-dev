@@ -187,8 +187,8 @@ if __name__ == "__main__":
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
 
-    shell("echo . $(which virtualenvwrapper.sh) >> ~/.bash_profile")
-    shell("echo . $(which virtualenvwrapper.sh) >> ~/.bashrc")
+    shell("if [ \"`grep virtualenvwrapper.sh $HOME/.bash_profile` x\" = \" x\" ]; then echo . $(which virtualenvwrapper.sh) >> ~/.bash_profile; fi")
+    shell("if [ \"`grep virtualenvwrapper.sh $HOME/.bashrc` x\" = \" x\" ]; then echo . $(which virtualenvwrapper.sh) >> ~/.bashrc; fi")
     shell(". $(which virtualenvwrapper.sh) && mkvirtualenv --clear europa -a " + EUROPA_ROOT)
     
     shell_in_europa("pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
