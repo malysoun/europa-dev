@@ -74,6 +74,9 @@ def shell(cmd):
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
     subprocess.call(cmd, shell=True, executable="/bin/bash")
 
+def shell_in_europa(cmd):
+    return shell(". $(which virtualenvwrapper.sh) && workon europa && " + cmd)
+
 
 def error(msg):
     print red("Error:"), msg
@@ -180,11 +183,12 @@ if __name__ == "__main__":
         warn( "git flow is not present.")
         abort_unless("Okay to try to install it?")
         install("git-flow")
-    
+
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
 
-    shell("echo . $(which virtualenvwrapper.sh) >> ~/.bashrc")
-    shell(". $(which virtualenvwrapper.sh) && mkvirtualenv " + EUROPA_ROOT)
-    shell("{0}/bin/pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
-    shell("{0}/bin/git-zen clone".format(EUROPA_ROOT))
+    shell("echo . $(which virtualenvwrapper.sh) >> ~/.bash_profile")
+    shell(". $(which virtualenvwrapper.sh) && mkvirtualenv europa -a " + EUROPA_ROOT)
+    
+    shell_in_europa("pip install -e {0}/utils/zenoss.europadev".format(EUROPA_ROOT))
+    shell_in_europa("git zen clone".format(EUROPA_ROOT))
