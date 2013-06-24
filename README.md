@@ -34,7 +34,6 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
             $ cd vagrant/dev
             $ vagrant up
             $ vagrant ssh
-
     - Fusion:
 
             $ cd vagrant/dev
@@ -55,5 +54,4 @@ To alway choose vmware_fusion as your default provider set the env variable
 like so.
 
     export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
-
 
