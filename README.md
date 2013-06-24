@@ -1,10 +1,8 @@
-europa-dev
-==========
-
-Europa Development Environment
+Zenoss Europa Development Environment
+=====================================
 
 Install
-=======
+-------
 NOTE: If you're on OS X with a case-insensitive filesystem, you should create a case-sensitive partition for your source, or Python imports will get confused.
 
    1. __Don't clone this repository directly__. Run this command, which will 
@@ -44,7 +42,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
    7. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
 
 Notes
-=====
+-----
 
 Vagrant has a bug regarding fedora networking.  You may need to apply
 https://github.com/mitchellh/vagrant/pull/1738 for fedora 18 to
