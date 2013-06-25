@@ -1,0 +1,2 @@
+This will be mounted as /var/cache/yum on the Vagrant box, to save
+time when rebuilding.
