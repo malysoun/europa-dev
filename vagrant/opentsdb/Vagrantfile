@@ -6,6 +6,8 @@ Vagrant.configure("2") do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+  tsdbport = 4242
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box     = "fedora18"
 
@@ -13,24 +15,23 @@ Vagrant.configure("2") do |config|
   # doesn't already exist on the user's system.
   config.vm.box_url = "http://static.stasiak.at/fedora-18-x86-2.box"
 
-  config.vm.network :forwarded_port, guest: 8080, host: 8080
+  # config.vm.network :forwarded_port, guest: 80, host: 8080
+  #port for tsd
+  config.vm.network :forwarded_port, guest: tsdbport, host: tsdbport
 
+  
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.network :private_network, ip: "192.168.33.11"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
   # config.vm.network :public_network
 
-  config.vm.synced_folder "yum", "/var/cache/yum", 
-                          :extra => 'dmode=777,fmode=777',
-                          :nfs => true
-
-  config.vm.synced_folder "../../src", "/zensrc", 
-                          :extra => 'dmode=775,fmode=775',
-                          :nfs => true
+  #config.vm.synced_folder "yum", "/var/cache/yum", 
+  #                        :extra => 'dmode=777,fmode=777',
+  #                        :nfs => true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -41,25 +42,15 @@ Vagrant.configure("2") do |config|
     # vb.gui = true
 
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "4096", "--cpus", "4"]
+    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
   end
-
   config.vm.provider :vmware_fusion do |fusion,override|
       override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_fusion.box"
-      fusion.vmx['memsize'] = 4096
-      fusion.vmx['numvcpus'] = 4
-      fusion.vmx['displayName'] = 'europa dev'
+      fusion.vmx['memsize'] = 2048
+      fusion.vmx['numvcpus'] = 2
+      fusion.vmx['displayName'] = 'europa opentsdb'
       fusion.vmx['annotation'] = "a general vagrant vm"
   end
-
-  config.vm.provider :vmware_workstation do |workstation,override|
-      override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_workstation.box"
-      workstation.vmx['memsize'] = 4096
-      workstation.vmx['numvcpus'] = 4
-      workstation.vmx['displayName'] = 'europa dev'
-      workstation.vmx['annotation'] = "a general vagrant vm"
-  end
-
   #
   # View the documentation for the provider you're using for more
   # information on available options.
@@ -70,40 +61,19 @@ Vagrant.configure("2") do |config|
   #
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "../../chef/cookbooks"
-    chef.add_recipe "zenoss::yum"
-    chef.add_recipe "build-essential"
     chef.add_recipe "java"
-    chef.add_recipe "maven"
-    chef.add_recipe "memcached"
-    chef.add_recipe "python"
-    chef.add_recipe "rabbitmq"
-
-    chef.add_recipe "zenoss::dependencies"
-    chef.add_recipe "zenoss::user"
-    chef.add_recipe "zenoss::zenhome"
-    chef.add_recipe "zenoss::sourcebuild"
-    chef.add_recipe "zenoss::mkzenossinstance"
+    chef.add_recipe "opentsdb"
+    chef.add_recipe "opentsdb::opentsdb"              
 
     chef.json = {
-        :zenoss => {
-            :zenhome => "/opt/zenoss"
-        },
-        :maven  => {
-            :version   => 3,
-            :setup_bin => true
-        },
-        :python => {
-            :version => "2.7.3"
-        },
         :java   => {
             :install_flavor => "openjdk",
             :jdk_version    => "7"
         },
-        :mysql  => {
-            :server_root_password   => "zenoss",
-            :server_repl_password   => "zenoss",
-            :server_debian_password => "zenoss"
-        }
+      :opentsdb => {
+            :tsdb_port => tsdbport,
+            :opentsdb_branch => "v1.1.0" 
+      }
     }
   end
 
