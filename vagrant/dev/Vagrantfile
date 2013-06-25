@@ -41,7 +41,8 @@ Vagrant.configure("2") do |config|
     # vb.gui = true
 
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "4096", "--cpus", "4"]
+    vb.customize ["modifyvm", :id, "--memory", "4096", "--cpus", "4", 
+        "--ioapic", "on"]
   end
   config.vm.provider :vmware_fusion do |fusion,override|
       override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_fusion.box"
