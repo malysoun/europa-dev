@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# This script reinitializes this environment as "europa"
+# so that "workon europa" will work.
+# source it, don't execute it.
+
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+THIS_ROOT=$(dirname ${HERE})
+deactivate
+mkvirtualenv --system-site-packages --clear europa -a "${THIS_ROOT}"
+pip install -e "${THIS_ROOT}"/utils/zenoss.europadev
