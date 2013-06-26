@@ -67,12 +67,12 @@ def warn(msg):
         print "        ", line
 
 
-def shell(cmd):
+def shell(cmd, **kwargs):
     """
     Run a shell command, printing it first.
     """
     say(' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd)
-    subprocess.call(cmd, shell=True, executable="/bin/bash")
+    subprocess.call(cmd, shell=True, executable="/bin/bash", **kwargs)
 
 def shell_in_europa(cmd):
     return shell(". $(which virtualenvwrapper.sh) && workon europa && " + cmd)
@@ -102,8 +102,8 @@ def abort_unless(msg=None):
         abort("Installation aborted by user")
 
 
-def git(cmd):
-    shell((os.environ.get("GIT") or "git") + " " + cmd)
+def git(cmd, **kwargs):
+    shell((os.environ.get("GIT") or "git") + " " + cmd, **kwargs)
 
 
 def which(cmd):
@@ -157,6 +157,7 @@ def clone_europa(name, root, repository, branch):
         abort_unless()
         shell("rm -rf {0}".format(root))
     git("clone {0} {1}".format(repository, root))
+    git("flow init -d".format(repository, root), cwd=root)
 
     if branch != "master":
         shell("cd {0} && git checkout {1}".format(root, branch))
