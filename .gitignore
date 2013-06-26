@@ -47,3 +47,5 @@ nosetests.xml
 *.iml
 chef
 src
+
+*~

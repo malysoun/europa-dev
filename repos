@@ -20,4 +20,4 @@ chef/cookbooks/chef_handler, https://github.com/opscode-cookbooks/chef_handler.g
 chef/cookbooks/runit, https://github.com/opscode-cookbooks/runit.git
 chef/cookbooks/subversion, https://github.com/opscode-cookbooks/subversion.git
 chef/cookbooks/git, https://github.com/opscode-cookbooks/git.git
-chef/cookbooks/opentsdb, git@github.com:zenoss/opentsdb.git
+chef/cookbooks/opentsdb, https://github.com/zenoss/opentsdb.git
