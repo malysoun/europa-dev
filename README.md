@@ -61,7 +61,7 @@ To pull changes for all of your repos, run `git zen pull`.
 code. You should use it to make sure you don't miss something. Here's how it
 works:
 
-   1. __`git zen feature start my-new-feature`__.
+   1. `git zen feature start my-new-feature`.
       This will create a local feature branch, based off `develop`, called
       `feature/my-new-feature` tracking a remote branch of the same name. It
       is the equivalent of running these commands:
@@ -71,10 +71,10 @@ works:
          $ git flow feature publish my-new-feature
          $ git stash apply
 
-   2. __Change code, `git commit`, etc.__ Use git normally while on this 
+   2. _Change code, `git commit`, etc.__ Use git normally while on this 
       branch. `git push` to publish the code to GitHub.
   
-   3. __`git zen feature request [my-new-feature]`__. If you're on the branch,
+   3. `git zen feature request [my-new-feature]`. If you're on the branch,
       you don't have to specify its name. This command will make sure that 
       you've pushed up any outstanding changes and create a pull request to 
       get your code merged into the `develop` branch. It is the equivalent of
@@ -88,7 +88,7 @@ works:
       satisfied, the reviewer will merge the changes in the pull request
       interface on GitHub.
 
-   5. __`git zen feature cleanup [my-new-feature]`__. If you're on the branch,
+   5. `git zen feature cleanup [my-new-feature]`. If you're on the branch,
       you don't have to specify its name. This will make sure the code was
       all merged, get your local repo up to date with the remote `develop` 
       branch, delete the now-unnecessary local branch, and delete the remote
