@@ -167,9 +167,18 @@ if __name__ == "__main__":
     BRANCH = os.environ.get("EUROPADEV_BRANCH") or "master"
     EUROPAPRIVATE = "EUROPAPRIVATE" in os.environ
 
+    verify("python2.7")
     verify("git")
     verify("vagrant")
     verify("VirtualBox")
+
+    if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
+        install_python("virtualenvwrapper", sudo=True)
+
+    if not success("git", "flow", "version"):
+        warn( "git flow is not present.")
+        abort_unless("Okay to try to install it?")
+        install("git-flow", el_name="gitflow")
 
     say("Installing a Zenoss development environment into {0}".format(EUROPA_ROOT))
     wait()
@@ -179,14 +188,6 @@ if __name__ == "__main__":
         say("Installing a Zenoss private development environment into {0}".format(europa_private_path))
         wait()
         clone_europa( "europa private", europa_private_path, PRIVATE_REPO, BRANCH)
-
-    if not success("git", "flow", "version"):
-        warn( "git flow is not present.")
-        abort_unless("Okay to try to install it?")
-        install("git-flow", el_name="gitflow")
-
-    if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
-        install_python("virtualenvwrapper", sudo=True)
 
     shell("if [ \"`grep virtualenvwrapper.sh $HOME/.bash_profile` x\" = \" x\" ]; then echo . $(which virtualenvwrapper.sh) >> ~/.bash_profile; fi")
     shell("if [ \"`grep virtualenvwrapper.sh $HOME/.bashrc` x\" = \" x\" ]; then echo . $(which virtualenvwrapper.sh) >> ~/.bashrc; fi")
