@@ -413,14 +413,15 @@ class feature(command):
         subparser = parser.add_subparsers()
 
         start = subparser.add_parser("start", help="Begin a reviewable change")
-        start.add_argument("start-name", help="Feature name")
+        start.add_argument("start-name", help="Feature name", default="", nargs="?")
 
         request = subparser.add_parser("request", help="Ask for a pull request from the current branch")
-        request.add_argument("request-name", help="Feature name (will autocomplete if possible)")
+        request.add_argument("request-name", help="Feature name (will autocomplete if possible)",
+                             nargs="?", default="")
         request.add_argument("-m", help="Message", required=False)
 
         cleanup = subparser.add_parser("cleanup", help="Clean up the current feature branch")
-        cleanup.add_argument("cleanup-name", help="Feature name to clean up")
+        cleanup.add_argument("cleanup-name", help="Feature name to clean up", nargs="?", default="")
 
 
 def is_command_class(x):
