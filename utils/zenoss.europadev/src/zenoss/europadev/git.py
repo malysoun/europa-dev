@@ -387,13 +387,24 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        if not response:
-            git_out("fetch", "origin")
-            git_out(*finish_args)
+        if response:
+            print "A pull request is still open. Get it reviewed."
+            return
+        # See if the thing has been merged
+        git_out("fetch", "origin")
+        rc, stdout, stderr = git_out("branch", "--merged", "origin/develop")
+        for line in stdout:
+            if line.strip('* \n') == branch:
+                break
+        else:
+            print "Not merged to develop yet. Do `git zen request` first."
+            return
+        retcode, stdout, stderr = git_out(*finish_args)
+        if retcode:
+            print "Nothing has been cleaned up yet."
+        else:
             git_out("push", "origin", ":" + branch)
             git_out("pull")  # Fast-forward develop
-        else:
-            print "Pull request is still open."
 
 
     def add_help(self, parser):
