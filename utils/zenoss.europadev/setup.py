@@ -26,7 +26,7 @@ setup(name='zenoss.europadev',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'requests',
       ],
       entry_points="""
       [console_scripts]
