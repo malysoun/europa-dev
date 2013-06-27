@@ -8,6 +8,7 @@ from getpass import getpass
 from functools import partial
 
 import requests
+import time
 
 from zenoss.europadev import repository
 from .termutils import *
@@ -349,6 +350,7 @@ class feature(command):
         if retcode:
             print "Couldn't push changes."
             return
+        time.sleep(1)
         response = github_api(
             "POST",
             "/repos/{0}/{1}/pulls".format(owner, repo),
