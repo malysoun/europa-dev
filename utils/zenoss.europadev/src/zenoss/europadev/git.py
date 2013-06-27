@@ -377,6 +377,7 @@ class feature(command):
             finish_args.append(name)
         else:
             finish_args.append(branch.replace("feature/", ""))
+
         # Test to see if open pull request
         response = github_api(
             "GET",
@@ -389,15 +390,17 @@ class feature(command):
         if response:
             print "A pull request is still open. Get it reviewed."
             return
-        # See if the thing has been merged
+
+        # Verify the thing has been merged (otherwise can skip pull requests)
         git_out("fetch", "origin")
         rc, stdout, stderr = git_out("branch", "--merged", "origin/develop")
         for line in stdout:
             if line.strip('* \n') == branch:
                 break
         else:
-            print "Not merged to develop yet. Do `git zen request` first."
+            print "Hasn't been merged to develop yet. Do `git zen request` first."
             return
+
         retcode, stdout, stderr = git_out(*finish_args)
         if retcode:
             print "Nothing has been cleaned up yet."
