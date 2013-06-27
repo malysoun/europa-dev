@@ -334,7 +334,9 @@ class feature(command):
 
     def start(self, name):
         git_out("flow", "feature", "start", name)
+        git_out("stash")
         git_out("flow", "feature", "publish", name)
+        git_out("stash", "apply")
 
     def request(self, name=None, body=''):
         owner, repo, branch = repo_info()
@@ -373,9 +375,9 @@ class feature(command):
             }))
         if not response:
             git_out("fetch", "origin")
-            git_out("pull", "develop")
             git_out(*finish_args)
             git_out("push", "origin", ":" + branch)
+            git_out("pull")  # Fast-forward develop
         else:
             print "Pull request is still open."
 
