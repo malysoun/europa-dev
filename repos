@@ -2,6 +2,10 @@ src/core, https://github.com/zenoss/zenoss-prodbin.git
 src/zep, https://github.com/zenoss/zenoss-zep
 src/protocols, https://github.com/zenoss/zenoss-protocols
 src/utils, https://github.com/zenoss/zenoss-utils
+src/zapp, https://github.com/zenoss/zenoss-zapp
+src/metric-publisher, https://github.com/zenoss/collector-publisher
+src/metric-service, https://github.com/zenoss/query
+src/metric-consumer, https://github.com/zenoss/zenoss.metric.consumer
 src/zenpacks/ZenPacks.zenoss.ZenJMX, https://github.com/zenoss/ZenPacks.zenoss.ZenJMX
 chef/cookbooks/java, https://github.com/zenoss/java.git
 chef/cookbooks/zenoss, https://github.com/zenoss/zenoss-dev-cookbook.git
