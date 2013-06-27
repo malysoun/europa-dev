@@ -358,8 +358,8 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        if 'url' in response:
-            print "Pull Request: ", response['url']
+        if 'html_url' in response:
+            print "Pull Request: ", response['html_url']
         elif response['message'] == 'Validation Failed':
             for error in response['errors']:
                 if error['message'].startswith("No commits between"):
