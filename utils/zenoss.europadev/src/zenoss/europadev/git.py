@@ -338,7 +338,6 @@ class feature(command):
 
     def request(self, name=None, body=''):
         owner, repo, branch = repo_info()
-        print owner, repo, branch
         rebase_args = ["flow", "feature", "rebase"]
         if name:
             branch = "feature/" + name
@@ -355,10 +354,29 @@ class feature(command):
             }))
         print "Pull Request: ", response['url']
 
-    def cleanup(self, name):
-        git_out("flow", "feature", "finish", name)
-        git_out("flow", "feature", "publish", name)
-        pass
+    def cleanup(self, name=None):
+        owner, repo, branch = repo_info()
+        finish_args = ["flow", "feature", "finish"]
+        if name:
+            branch = "feature/" + name
+            finish_args.append(name)
+        else:
+            finish_args.append(branch.replace("feature/", ""))
+        # Test to see if open pull request
+        response = github_api(
+            "GET",
+            "/repos/{0}/{1}/pulls".format(owner, repo),
+            data=json.dumps({
+                "state": "open",
+                "head": branch,
+                "base": "develop"
+            }))
+        if not response:
+            git_out(*finish_args)
+            git_out("push", "origin", ":" + branch)
+        else:
+            print "Pull request is still open."
+
 
     def add_help(self, parser):
         subparser = parser.add_subparsers()
