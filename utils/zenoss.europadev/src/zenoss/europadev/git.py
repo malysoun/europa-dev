@@ -341,15 +341,14 @@ class feature(command):
 
     def request(self, name=None, body=''):
         owner, repo, branch = repo_info()
-        #rebase_args = ["flow", "feature", "rebase"]
-        #if name:
-        #    branch = "feature/" + name
-        #    rebase_args.append(name)
-        #retcode, stdout, _ = git_out(*rebase_args)
-        #if retcode:
-        #    print "Unable to make a pull request."
-        #    return
-        git_out("push", "origin", branch)
+        rc, stdout, _ = git_out("diff")
+        if stdout:
+            print 'You have uncommitted changes. Commit them.'
+            return
+        retcode, stdout, _ = git_out("push", "origin", branch)
+        if retcode:
+            print "Couldn't push changes."
+            return
         response = github_api(
             "POST",
             "/repos/{0}/{1}/pulls".format(owner, repo),
