@@ -310,6 +310,7 @@ class lsfiles(command):
         files = [os.path.join(config.rootpath(), file) for file in files]
         for file in files:
             print file.strip()
+            pass
         return 0
 
     def perform(self, args):
@@ -344,7 +345,11 @@ class feature(command):
         if name:
             branch = "feature/" + name
             rebase_args.append(name)
-        git_out(*rebase_args)
+        retcode, stdout, _ = git_out(*rebase_args)
+        if retcode:
+            print "Unable to make a pull request."
+            return
+        git_out("push", "origin", branch)
         response = github_api(
             "POST",
             "/repos/{0}/{1}/pulls".format(owner, repo),
@@ -354,7 +359,16 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        print "Pull Request: ", response['url']
+        if 'url' in response:
+            print "Pull Request: ", response['url']
+        elif response['message'] == 'Validation Failed':
+            for error in response['errors']:
+                if error['message'].startswith("No commits between"):
+                    print "You have to commit some code first!"
+                    return
+                else:
+                    print error.get('message')
+
 
     def cleanup(self, name=None):
         owner, repo, branch = repo_info()
