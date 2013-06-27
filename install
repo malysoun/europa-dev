@@ -126,7 +126,7 @@ def success(*args):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return not p.wait() 
 
-def install(pkg):
+def install(pkg, deb_name=None, el_name=None):
     if sys.platform == 'darwin':
         if not verify("brew", die=False):
             say("Can't autoinstall {0} without Homebrew. Get it from http://mxcl.github.io/homebrew/")
@@ -135,9 +135,9 @@ def install(pkg):
         # Assume linux
         distro, version, ident = platform.linux_distribution()
         if distro.lower() in ("ubuntu", "debian"):
-            shell("sudo apt-get install {0}".format(pkg))
+            shell("sudo apt-get install {0}".format(deb_name or pkg))
         elif distro.lower() in ("centos", "rhel", "fedora"):
-            shell("sudo yum -y install {0}".format(pkg))
+            shell("sudo yum -y install {0}".format(el_name or pkg))
 
 
 def install_python(pkg, sudo=False):
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     if not success("git", "flow", "version"):
         warn( "git flow is not present.")
         abort_unless("Okay to try to install it?")
-        install("git-flow")
+        install("git-flow", el_name="gitflow")
 
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
