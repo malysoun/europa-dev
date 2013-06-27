@@ -341,15 +341,14 @@ class feature(command):
 
     def request(self, name=None, body=''):
         owner, repo, branch = repo_info()
-        #rebase_args = ["flow", "feature", "rebase"]
-        #if name:
-        #    branch = "feature/" + name
-        #    rebase_args.append(name)
-        #retcode, stdout, _ = git_out(*rebase_args)
-        #if retcode:
-        #    print "Unable to make a pull request."
-        #    return
-        git_out("push", "origin", branch)
+        rc, stdout, _ = git_out("diff")
+        if stdout:
+            print 'You have uncommitted changes. Commit them.'
+            return
+        retcode, stdout, _ = git_out("push", "origin", branch)
+        if retcode:
+            print "Couldn't push changes."
+            return
         response = github_api(
             "POST",
             "/repos/{0}/{1}/pulls".format(owner, repo),
@@ -359,8 +358,8 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        if 'url' in response:
-            print "Pull Request: ", response['url']
+        if 'html_url' in response:
+            print "Pull Request: ", response['html_url']
         elif response['message'] == 'Validation Failed':
             for error in response['errors']:
                 if error['message'].startswith("No commits between"):
@@ -378,6 +377,7 @@ class feature(command):
             finish_args.append(name)
         else:
             finish_args.append(branch.replace("feature/", ""))
+
         # Test to see if open pull request
         response = github_api(
             "GET",
@@ -390,15 +390,17 @@ class feature(command):
         if response:
             print "A pull request is still open. Get it reviewed."
             return
-        # See if the thing has been merged
+
+        # Verify the thing has been merged (otherwise can skip pull requests)
         git_out("fetch", "origin")
         rc, stdout, stderr = git_out("branch", "--merged", "origin/develop")
         for line in stdout:
             if line.strip('* \n') == branch:
                 break
         else:
-            print "Not merged to develop yet. Do `git zen request` first."
+            print "Hasn't been merged to develop yet. Do `git zen request` first."
             return
+
         retcode, stdout, stderr = git_out(*finish_args)
         if retcode:
             print "Nothing has been cleaned up yet."
