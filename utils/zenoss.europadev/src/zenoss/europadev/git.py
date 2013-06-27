@@ -341,13 +341,16 @@ class feature(command):
             branch = "feature/" + name
             rebase_args.append(name)
         git_out(*rebase_args)
-        github_api("POST", "/repos/{0}/{1}/pulls".format(owner, repo),
-                   data=json.dumps({
-                       "title": "Please review branch %s" % branch,
-                       "body": body,
-                       "head": branch,
-                       "base": "develop"
-                   }))
+        response = github_api(
+            "POST",
+            "/repos/{0}/{1}/pulls".format(owner, repo),
+            data=json.dumps({
+                "title": "Please review branch %s" % branch,
+                "body": body,
+                "head": branch,
+                "base": "develop"
+            }))
+        print response
 
     def cleanup(self, name):
         git_out("flow", "feature", "finish", name)
