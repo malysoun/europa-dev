@@ -372,6 +372,8 @@ class feature(command):
                 "base": "develop"
             }))
         if not response:
+            git_out("fetch", "origin")
+            git_out("pull", "develop")
             git_out(*finish_args)
             git_out("push", "origin", ":" + branch)
         else:
