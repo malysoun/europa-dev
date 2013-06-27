@@ -310,6 +310,7 @@ class lsfiles(command):
         files = [os.path.join(config.rootpath(), file) for file in files]
         for file in files:
             print file.strip()
+            pass
         return 0
 
     def perform(self, args):
