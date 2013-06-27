@@ -346,6 +346,7 @@ class feature(command):
             branch = "feature/" + name
             rebase_args.append(name)
         git_out(*rebase_args)
+        git_out("push", "origin", branch)
         response = github_api(
             "POST",
             "/repos/{0}/{1}/pulls".format(owner, repo),
@@ -355,7 +356,14 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        print "Pull Request: ", response['url']
+        if 'url' in response:
+            print "Pull Request: ", response['url']
+        elif response['message'] == 'Validation Failed':
+            for error in response['errors']:
+                if error['message'].startswith("No commits between"):
+                    print "You have to commit some code first!"
+
+        print response
 
     def cleanup(self, name=None):
         owner, repo, branch = repo_info()
