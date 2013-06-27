@@ -71,7 +71,7 @@ works:
          $ git flow feature publish my-new-feature
          $ git stash apply
 
-   2. _Change code, `git commit`, etc.__ Use git normally while on this 
+   2. __Change code, `git commit`, etc.__ Use git normally while on this 
       branch. `git push` to publish the code to GitHub.
   
    3. `git zen feature request [my-new-feature]`. If you're on the branch,
