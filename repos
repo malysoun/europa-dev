@@ -6,6 +6,7 @@ src/zapp, https://github.com/zenoss/zenoss-zapp
 src/metric-publisher, https://github.com/zenoss/collector-publisher
 src/metric-service, https://github.com/zenoss/query
 src/metric-consumer, https://github.com/zenoss/zenoss.metric.consumer
+src/zenoss-extjs, https://github.com/zenoss/zenoss-extjs
 src/zenpacks/ZenPacks.zenoss.ZenJMX, https://github.com/zenoss/ZenPacks.zenoss.ZenJMX
 chef/cookbooks/java, https://github.com/zenoss/java.git
 chef/cookbooks/zenoss, https://github.com/zenoss/zenoss-dev-cookbook.git
