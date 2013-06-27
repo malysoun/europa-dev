@@ -345,7 +345,10 @@ class feature(command):
         if name:
             branch = "feature/" + name
             rebase_args.append(name)
-        git_out(*rebase_args)
+        retcode, stdout, _ = git_out(*rebase_args)
+        if retcode:
+            print "Unable to make a pull request."
+            return
         git_out("push", "origin", branch)
         response = github_api(
             "POST",
@@ -362,8 +365,10 @@ class feature(command):
             for error in response['errors']:
                 if error['message'].startswith("No commits between"):
                     print "You have to commit some code first!"
+                    return
+                else:
+                    print error.get('message')
 
-        print response
 
     def cleanup(self, name=None):
         owner, repo, branch = repo_info()
