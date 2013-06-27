@@ -44,6 +44,7 @@ def github_api(method, url, data=None):
         headers={"Authorization": "token %s" % token}
     ).json()
 
+
 def repo_info():
     remotes = (s.strip() for s in git_out("remote", "-v")[1])
     branch = git_out("symbolic-ref", "--short", "HEAD")[1][0].strip()
@@ -51,8 +52,9 @@ def repo_info():
         if line.startswith('origin'):
             line = line.rsplit(":", 1)[-1]
             owner, name = line.split('/')[-2:]
+            name = name.split()[0]
             if name.endswith('.git'):
-                name = name[-4:]
+                name = name[:-4]
             return owner, name, branch
 
 
@@ -336,6 +338,7 @@ class feature(command):
 
     def request(self, name=None, body=''):
         owner, repo, branch = repo_info()
+        print owner, repo, branch
         rebase_args = ["flow", "feature", "rebase"]
         if name:
             branch = "feature/" + name
@@ -350,7 +353,7 @@ class feature(command):
                 "head": branch,
                 "base": "develop"
             }))
-        print response
+        print "Pull Request: ", response['url']
 
     def cleanup(self, name):
         git_out("flow", "feature", "finish", name)
