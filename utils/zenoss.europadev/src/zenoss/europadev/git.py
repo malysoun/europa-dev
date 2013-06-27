@@ -45,11 +45,11 @@ def github_api(method, url, data=None):
     ).json()
 
 def repo_info():
-    remotes = git_out(["remote", "-v"])
-    branch = git_out(["symbolic-ref", "--short", "HEAD"]).strip()
-    for line in remotes.splitlines():
+    remotes = (s.strip() for s in git_out("remote", "-v")[1])
+    branch = git_out("symbolic-ref", "--short", "HEAD")[1][0].strip()
+    for line in remotes:
         if line.startswith('origin'):
-            line = line.split(":")[-1]
+            line = line.rsplit(":", 1)[-1]
             owner, name = line.split('/')[-2:]
             if name.endswith('.git'):
                 name = name[-4:]
