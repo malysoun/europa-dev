@@ -1,12 +1,62 @@
+import json
 import os
 import sys
 import inspect
 import argparse
 import subprocess
-import repository
-from repository import Configuration
+from getpass import getpass
 from functools import partial
+
+import requests
+import time
+
+from zenoss.europadev import repository
 from .termutils import *
+from .repository import Configuration
+
+
+def get_oauth_token():
+    """
+    Get or create an OAuth token for making pull requests.
+    """
+    cache = os.path.join(os.path.expanduser("~"), ".europa.gitauth")
+    try:
+        result = open(cache, 'r').read().strip()
+    except IOError:
+        username = raw_input("GitHub username: ")
+        password = getpass("GitHub password: ")
+        response = requests.post(
+            "https://api.github.com/authorizations",
+            data=json.dumps({
+                "scopes": ["repo"],
+                "note": "Europa Development Environment"
+            }),
+            auth=(username, password))
+        result = response.json().get('token')
+        with open(cache, 'w') as f:
+            f.write(result)
+    return result
+
+
+def github_api(method, url, data=None):
+    token = get_oauth_token()
+    return requests.request(
+        method, "https://api.github.com" + url, data=data,
+        headers={"Authorization": "token %s" % token}
+    ).json()
+
+
+def repo_info():
+    remotes = (s.strip() for s in git_out("remote", "-v")[1])
+    branch = git_out("symbolic-ref", "--short", "HEAD")[1][0].strip()
+    for line in remotes:
+        if line.startswith('origin'):
+            line = line.rsplit(":", 1)[-1]
+            owner, name = line.split('/')[-2:]
+            name = name.split()[0]
+            if name.endswith('.git'):
+                name = name[:-4]
+            return owner, name, branch
 
 
 def git(command_name, *args, **kwargs):
@@ -35,7 +85,7 @@ class command(object):
     def name(self):
         return self.cmd if self.cmd else self.__class__.__name__
 
-    def configure( self, parser):
+    def configure(self, parser):
         cmd_parser = parser.add_parser(self.name(), help=self.help)
         self.add_help(cmd_parser)
 
@@ -45,7 +95,7 @@ class command(object):
     def get_untracked_changes(self, path):
         return git_out("ls-files", "--other", "--exclude-standard", cwd=path)[1]
 
-    def has_staged_changes( self, path):
+    def has_staged_changes(self, path):
         """ args for testing if a local git repository has changes """
         return git("diff-index", "--cached", "--quiet", "HEAD", "--", cwd=path)
 
@@ -56,7 +106,7 @@ class command(object):
         untracked_changes = self.get_untracked_changes(path)
         return 1 if len(untracked_changes) > 0 else 0
 
-    def has_changes( self, path):
+    def has_changes(self, path):
         """ test if a local git repository has changes """
         git("update-index", "-q", "--refresh", cwd=path)
         if self.has_unstaged_changes(path):
@@ -70,10 +120,10 @@ class command(object):
 
         return False
 
-    def add_help( self, parser):
+    def add_help(self, parser):
         pass
 
-    def perform( self, args):
+    def perform(self, args):
         return 0
 
 
@@ -212,7 +262,7 @@ class xstatus(command):
     help = "print a status summary for repo(s)"
     __formatter = "{:<45} {:<10} {:^11} {:^8} {:^9} {}"
 
-    def add_help( self, parser):
+    def add_help(self, parser):
         pass
 
     #path, repo, branch, untracked, tracked, unstaged,
@@ -236,8 +286,8 @@ class xstatus(command):
         configs = self.repositories.exist()
         summaries = configs.reduce(self.execute, [])
         # bring the repos with changes to the top
-        summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]), 
-                reverse=True)
+        summaries = sorted(summaries, lambda x, y: cmp(x[2:5], y[2:5]),
+                           reverse=True)
         for summary in summaries:
             s = self.__formatter.format(*summary)
             if 'X' == summary[2]:
@@ -261,6 +311,7 @@ class lsfiles(command):
         files = [os.path.join(config.rootpath(), file) for file in files]
         for file in files:
             print file.strip()
+            pass
         return 0
 
     def perform(self, args):
@@ -268,7 +319,114 @@ class lsfiles(command):
         return configs.reduce(self.execute, 0)
 
 
-def is_command_class( x):
+class feature(command):
+    cmd = None
+    help = "Manage feature workflow"
+
+    def perform(self, args):
+        start = getattr(args, 'start-name', None)
+        if start is not None:
+            self.start(start)
+        request = getattr(args, 'request-name', None)
+        if request is not None:
+            self.request(request, getattr(args, 'message', None))
+        cleanup = getattr(args, 'cleanup-name', None)
+        if cleanup is not None:
+            self.cleanup(cleanup)
+
+    def start(self, name):
+        git_out("flow", "feature", "start", name)
+        git_out("stash")
+        git_out("flow", "feature", "publish", name)
+        git_out("stash", "apply")
+
+    def request(self, name=None, body=''):
+        owner, repo, branch = repo_info()
+        rc, stdout, _ = git_out("diff")
+        if stdout:
+            print 'You have uncommitted changes. Commit them.'
+            return
+        retcode, stdout, _ = git_out("push", "origin", branch)
+        if retcode:
+            print "Couldn't push changes."
+            return
+        time.sleep(1)
+        response = github_api(
+            "POST",
+            "/repos/{0}/{1}/pulls".format(owner, repo),
+            data=json.dumps({
+                "title": "Please review branch %s" % branch,
+                "body": body,
+                "head": branch,
+                "base": "develop"
+            }))
+        if 'html_url' in response:
+            print "Pull Request: ", response['html_url']
+        elif response['message'] == 'Validation Failed':
+            for error in response['errors']:
+                if error['message'].startswith("No commits between"):
+                    print "You have to commit some code first!"
+                    return
+                else:
+                    print error.get('message')
+
+
+    def cleanup(self, name=None):
+        owner, repo, branch = repo_info()
+        finish_args = ["flow", "feature", "finish"]
+        if name:
+            branch = "feature/" + name
+            finish_args.append(name)
+        else:
+            finish_args.append(branch.replace("feature/", ""))
+
+        # Test to see if open pull request
+        response = github_api(
+            "GET",
+            "/repos/{0}/{1}/pulls".format(owner, repo),
+            data=json.dumps({
+                "state": "open",
+                "head": branch,
+                "base": "develop"
+            }))
+        if response:
+            print "A pull request is still open. Get it reviewed."
+            return
+
+        # Verify the thing has been merged (otherwise can skip pull requests)
+        git_out("fetch", "origin")
+        rc, stdout, stderr = git_out("branch", "--merged", "origin/develop")
+        for line in stdout:
+            if line.strip('* \n') == branch:
+                break
+        else:
+            print "Hasn't been merged to develop yet. Do `git zen request` first."
+            return
+
+        retcode, stdout, stderr = git_out(*finish_args)
+        if retcode:
+            print "Nothing has been cleaned up yet."
+        else:
+            git_out("push", "origin", ":" + branch)
+            git_out("pull")  # Fast-forward develop
+
+
+    def add_help(self, parser):
+        subparser = parser.add_subparsers()
+
+        start = subparser.add_parser("start", help="Begin a reviewable change")
+        start.add_argument("start-name", help="Feature name", default="", nargs="?")
+
+        request = subparser.add_parser("request", help="Ask for a pull request from the current branch")
+        request.add_argument("request-name", help="Feature name (will autocomplete if possible)",
+                             nargs="?", default="")
+        request.add_argument("-m", help="Message", required=False)
+
+        cleanup = subparser.add_parser("cleanup", help="Clean up the current feature branch")
+        cleanup.add_argument("cleanup-name", help="Feature name to clean up", nargs="?", default="")
+
+
+def is_command_class(x):
     return inspect.isclass(x) and issubclass(x, command)
 
 
