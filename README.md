@@ -85,3 +85,13 @@ like so.
 
     export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
+
+Known Issues
+------------
+
+VirtualBox 4.2.12/4.2.14 are broken on the mac
+https://github.com/mitchellh/vagrant/issues/1847
+
+Networking is currently broken for static ips with the fusion/workstation
+providers.  A case has been opened for this issue. 
+VirtualBox is only supported at this time. 
