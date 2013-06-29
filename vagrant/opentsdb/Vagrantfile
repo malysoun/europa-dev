@@ -1,0 +1,80 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  tsdbport = 4242
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box     = "fedora18"
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  config.vm.box_url = "http://static.stasiak.at/fedora-18-x86-2.box"
+
+  # config.vm.network :forwarded_port, guest: 80, host: 8080
+  #port for tsd
+  config.vm.network :forwarded_port, guest: tsdbport, host: tsdbport
+
+  
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network :private_network, ip: "192.168.33.11"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network :public_network
+
+  #config.vm.synced_folder "yum", "/var/cache/yum", 
+  #                        :extra => 'dmode=777,fmode=777',
+  #                        :nfs => true
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider :virtualbox do |vb|
+    # Don't boot with headless mode
+    # vb.gui = true
+
+    # Use VBoxManage to customize the VM. For example to change memory:
+    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
+  end
+  config.vm.provider :vmware_fusion do |fusion,override|
+      override.vm.box_url = "http://aws-vagrant-box.s3.amazonaws.com/Fedora-18-x86_64_fusion.box"
+      fusion.vmx['memsize'] = 2048
+      fusion.vmx['numvcpus'] = 2
+      fusion.vmx['displayName'] = 'europa opentsdb'
+      fusion.vmx['annotation'] = "a general vagrant vm"
+  end
+  #
+  # View the documentation for the provider you're using for more
+  # information on available options.
+
+  # Enable provisioning with chef solo, specifying a cookbooks path, roles
+  # path, and data_bags path (all relative to this Vagrantfile), and adding
+  # some recipes and/or roles.
+  #
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "../../chef/cookbooks"
+    chef.add_recipe "java"
+    chef.add_recipe "opentsdb"
+    chef.add_recipe "opentsdb::opentsdb"              
+
+    chef.json = {
+        :java   => {
+            :install_flavor => "openjdk",
+            :jdk_version    => "7"
+        },
+      :opentsdb => {
+            :tsdb_port => tsdbport,
+            :opentsdb_branch => "v1.1.0" 
+      }
+    }
+  end
+
+end

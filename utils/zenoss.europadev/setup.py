@@ -2,6 +2,8 @@ from setuptools import setup, find_packages
 import os
 
 version = '1.0'
+pass
+
 
 long_description = open('README.txt').read()
 
@@ -26,7 +28,7 @@ setup(name='zenoss.europadev',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'requests',
       ],
       entry_points="""
       [console_scripts]

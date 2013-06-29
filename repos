@@ -2,6 +2,11 @@ src/core, https://github.com/zenoss/zenoss-prodbin.git
 src/zep, https://github.com/zenoss/zenoss-zep
 src/protocols, https://github.com/zenoss/zenoss-protocols
 src/utils, https://github.com/zenoss/zenoss-utils
+src/zapp, https://github.com/zenoss/zenoss-zapp
+src/metric-publisher, https://github.com/zenoss/collector-publisher
+src/metric-service, https://github.com/zenoss/query
+src/metric-consumer, https://github.com/zenoss/zenoss.metric.consumer
+src/zenoss-extjs, https://github.com/zenoss/zenoss-extjs
 src/zenpacks/ZenPacks.zenoss.ZenJMX, https://github.com/zenoss/ZenPacks.zenoss.ZenJMX
 chef/cookbooks/java, https://github.com/zenoss/java.git
 chef/cookbooks/zenoss, https://github.com/zenoss/zenoss-dev-cookbook.git
@@ -20,3 +25,4 @@ chef/cookbooks/chef_handler, https://github.com/opscode-cookbooks/chef_handler.g
 chef/cookbooks/runit, https://github.com/opscode-cookbooks/runit.git
 chef/cookbooks/subversion, https://github.com/opscode-cookbooks/subversion.git
 chef/cookbooks/git, https://github.com/opscode-cookbooks/git.git
+chef/cookbooks/opentsdb, https://github.com/zenoss/opentsdb.git

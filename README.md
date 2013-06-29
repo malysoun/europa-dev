@@ -56,6 +56,55 @@ To see an extended status of your repos, run `git zen xstatus`.
 To pull changes for all of your repos, run `git zen pull`.
 
 
+### git zen feature
+`git zen feature` encapsulates the workflow for developing against Zenoss
+code. You should use it to make sure you don't miss something. Here's how it
+works:
+
+   1. `git zen feature start my-new-feature`.
+      This will create a local feature branch, based off `develop`, called
+      `feature/my-new-feature` tracking a remote branch of the same name. It
+      is the equivalent of running these commands:
+
+         $ git flow feature start my-new-feature
+         $ git stash
+         $ git flow feature publish my-new-feature
+         $ git stash apply
+
+   2. __Change code, `git commit`, etc.__ Use git normally while on this 
+      branch. `git push` to publish the code to GitHub.
+  
+   3. `git zen feature request [my-new-feature]`. If you're on the branch,
+      you don't have to specify its name. This command will make sure that 
+      you've pushed up any outstanding changes and create a pull request to 
+      get your code merged into the `develop` branch. It is the equivalent of
+      performing these actions:
+
+         $ # Verify you have no uncommitted changes
+         $ git push origin feature/my-new-feature
+         $ # Create a pull request in GitHub from feature/my-new-feature to develop
+
+   4. __Get code reviewed. Make updates simply by committing/pushing.__ When
+      satisfied, the reviewer will merge the changes in the pull request
+      interface on GitHub.
+
+   5. `git zen feature cleanup [my-new-feature]`. If you're on the branch,
+      you don't have to specify its name. This will make sure the code was
+      all merged, get your local repo up to date with the remote `develop` 
+      branch, delete the now-unnecessary local branch, and delete the remote
+      branch it's tracking. This is the equivalent of performing these
+      actions:
+
+         $ # Verify the pull request has been closed
+         $ git fetch origin
+         $ git branch --merged origin/develop # Verify feature/my-new-feature
+         $ git flow feature finish feature/my-new-feature
+         $ git push origin :feature/my-new-feature
+         $ git pull  # Fast-forward develop
+
+   
+
+
 Modifying europa-dev
 --------------------
 Feel free to keep your own copy of europa-dev with your own custom modifications.
@@ -78,7 +127,7 @@ Notes
 
 Vagrant has a bug regarding fedora networking.  You may need to apply
 https://github.com/mitchellh/vagrant/pull/1738 for fedora 18 to
-load the networking properly
+load the networking properly.
 
 To alway choose vmware_fusion as your default provider set the env variable
 like so.
