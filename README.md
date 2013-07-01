@@ -1,8 +1,8 @@
 Zenoss Europa Development Environment
 =====================================
 
-Install
--------
+Installation
+------------
 NOTE: If you're on OS X with a case-insensitive filesystem, you should create a case-sensitive partition for your source, or Python imports will get confused.
 
    1. __Don't clone this repository directly__. Run this command, which will 
@@ -72,8 +72,23 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
    10. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
 
 
-git zen
--------
+Working with your environment
+-----------------------------
+Run `workon europa` to enter your dev environment. Once in the environment,
+several commands are available to make things simpler.
+
+### cdproject/cdvirtualenv
+These commands will switch to your dev environment root and the virtualenv
+environment directory (with lib/python2.7), respectively. These are included
+with virtualenvwrapper, which is installed automatically.
+
+### upeuropa
+The process of updating your Europa dev environment is encapsulated in the
+`upeuropa` command. It will pull the latest environment code, clone any missing
+repositories, and reinstall the utilities package to make sure you get the
+latest scripts or environment dependencies. Do this instead of "git pull".
+
+### git zen
 `git zen` is a utility that will run various commands across your Zenoss git
 repositories. Those repositories are defined in `repos` and `private/repos`. If
 you want a new repository to be part of your development environment, add
@@ -84,7 +99,6 @@ To see a simple status of changes in your repos, run `git zen status`.
 To see an extended status of your repos, run `git zen xstatus`.
 
 To pull changes for all of your repos, run `git zen pull`.
-
 
 ### git zen feature
 `git zen feature` encapsulates the workflow for developing against Zenoss
@@ -132,8 +146,6 @@ works:
          $ git push origin :feature/my-new-feature
          $ git pull  # Fast-forward develop
 
-   
-
 
 Modifying europa-dev
 --------------------
@@ -164,3 +176,8 @@ like so.
 
     export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
+### Useful bash aliases
+alias vp="vagrant provision"
+alias vs="vagrant ssh"
+alias vu="vagrant up"
+alias vd="vagrant destroy"
