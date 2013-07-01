@@ -87,7 +87,12 @@ Vagrant.configure("2") do |config|
 
     chef.json = {
         :zenoss => {
-            :zenhome => "/opt/zenoss"
+            :zenhome => "/opt/zenoss",
+            :username => "zendev",
+            :group => "zendev",
+            # shadow hash of "zendev"
+            :password => "$1$GeQbsUb0$a2ETbvbO2ONgt/.7VBpTK1",
+            :authorized_keys => ""
         },
         :maven  => {
             :version   => 3,
