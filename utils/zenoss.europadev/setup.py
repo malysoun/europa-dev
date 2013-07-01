@@ -33,5 +33,6 @@ setup(name='zenoss.europadev',
       entry_points="""
       [console_scripts]
       git-zen = zenoss.europadev.git:main
+      upeuropa = zenoss.europadev.update:main
       """,
       )
