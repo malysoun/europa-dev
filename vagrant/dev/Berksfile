@@ -1,0 +1,18 @@
+site :opscode
+cookbook 'apt'
+cookbook 'build-essential'
+cookbook 'chef_handler'
+cookbook 'erlang'
+cookbook 'git'
+cookbook 'memcached'
+cookbook 'mysql'
+cookbook 'openssl'
+cookbook 'runit'
+cookbook 'subversion'
+cookbook 'yum'
+cookbook 'java', git: 'https://github.com/zenoss/java.git'
+cookbook 'maven', git: 'https://github.com/zenoss/maven.git'
+cookbook 'python', git: 'https://github.com/zenoss/python.git'
+cookbook 'rabbitmq', git: 'https://github.com/zenoss/rabbitmq.git'
+cookbook 'opentsdb', :path => "../../chef/cookbooks/opentsdb"
+cookbook 'zenoss', :path => "../../chef/cookbooks/zenoss"
