@@ -264,7 +264,9 @@ class xstatus(command):
     __formatter = "{:<45} {:<10} {:^11} {:^8} {:^9} {}"
 
     def add_help(self, parser):
-        pass
+        parser.add_argument("--with-chef", dest="chef", action="store_true",
+                default=False, 
+                help="Include non-Zenoss chef cookbooks in output.")
 
     #path, repo, branch, untracked, tracked, unstaged,
     def execute(self, summaries, config):
@@ -291,12 +293,14 @@ class xstatus(command):
                            reverse=True)
         for summary in summaries:
             s = self.__formatter.format(*summary)
-            if 'X' == summary[2]:
-                print green(s)
-            elif 'X' == summary[3]:
-                print blue(s)
-            else:
-                print s
+            if args.chef or (not s.startswith("chef/" ) 
+                or s.startswith("chef/cookbooks/zenoss")):
+                if 'X' == summary[2]:
+                    print green(s)
+                elif 'X' == summary[3]:
+                    print blue(s)
+                else:
+                    print s
 
 
 class lsfiles(command):
