@@ -26,7 +26,21 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
    4. Ensure nfs file sharing is turned on
       - Mac (Mountain Lion) -- http://support.apple.com/kb/HT4695
       - Ubuntu: `sudo apt-get install nfs-kernel-server`
-   5. Start up your dev box.
+
+   5. Optional: Set up authorized_keys. Find the line in Vagrantfile:
+
+        chef.json = {
+            :zenoss => {
+                ...
+                :authorized_keys => ""
+            }
+            ...
+        }
+
+     Paste the contents of ~/.ssh/id_rsa.pub or ~/.ssh/id_dsa.pub as the value
+     assigned to authorized_keys.
+
+   6. Start up your dev box.
     - VirtualBox:
       
             $ cd vagrant/dev
@@ -38,8 +52,24 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   6. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
-   7. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
+   7. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
+
+   8. Optional: Install SSH keys (if you skipped step 5). Run:
+
+        cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
+
+      Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
+      public key.
+
+   9. Set up SSH config. Run: 
+
+        cat <<EOF>> ~/.ssh/config
+        Host zendev
+            User zendev
+            HostName 192.168.33.10
+        EOF
+
+   10. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
 
 
 git zen
