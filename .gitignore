@@ -21,7 +21,6 @@ yum/
 /chef/
 /include/
 /lib/
-/src/
 /var/
 /dist/
 /build/
