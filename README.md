@@ -5,7 +5,18 @@ Installation
 ------------
 NOTE: If you're on OS X with a case-insensitive filesystem, you should create a case-sensitive partition for your source, or Python imports will get confused.
 
-   1. __Don't clone this repository directly__. Run this command, which will 
+   1. Set up git credentials to avoid being asked for passwords constantly. On
+      OS X, run:
+
+        $ git config --global credential.helper osxkeychain
+
+      On other platforms, run: 
+
+        $ git config --global credential.helper 'cache --timeout=86400'
+
+      See <https://help.github.com/articles/set-up-git> for more information.
+
+   2. __Don't clone this repository directly__. Run this command, which will 
       set up the entire environment in the directory `./europa`:
 
         $ python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go)"
@@ -18,20 +29,20 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
     (asking for confirmation first) if not, including [Virtualbox][], 
     [Vagrant][] and [git-flow][].
 
-   2. Execute `workon europa` to enter the sandboxed development environment
+   3. Execute `workon europa` to enter the sandboxed development environment
       (issue the command `deactivate` to leave the sandbox). You can install
       Python packages using the `pip` in your `PATH` without affecting the rest of
       the system. You may need to open a new shell to get `workon` defined.
 
-   3. See the state of your cloned repositories: 
+   4. See the state of your cloned repositories: 
 
         $ git zen xstatus
     
-   4. Ensure nfs file sharing is turned on
+   5. Ensure nfs file sharing is turned on
       - Mac (Mountain Lion) -- http://support.apple.com/kb/HT4695
       - Ubuntu: `sudo apt-get install nfs-kernel-server`
 
-   5. Optional: Set up authorized_keys. Find the line in Vagrantfile:
+   6. Optional: Set up authorized_keys. Find the line in Vagrantfile:
 
         chef.json = {
             :zenoss => {
@@ -44,7 +55,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
      Paste the contents of ~/.ssh/id_rsa.pub or ~/.ssh/id_dsa.pub as the value
      assigned to authorized_keys.
 
-   6. Start up your dev box.
+   7. Start up your dev box.
     - VirtualBox:
       
             $ cd vagrant/dev
@@ -56,16 +67,16 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   7. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
+   8. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
 
-   8. Optional: Install SSH keys (if you skipped step 5). Run on the host box:
+   9. Optional: Install SSH keys (if you skipped step 6). Run on the host box:
 
         cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
 
       Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
       public key.
 
-   9. Set up SSH config. Run on the host box: 
+   10. Set up SSH config. Run on the host box: 
 
         cat <<EOF>> ~/.ssh/config
         Host zendev
@@ -76,7 +87,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
       You will them be able to run "ssh zendev" without specifying user or
       modifying your hosts file.
 
-   10. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
+   11. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
 
 
 [Virtualbox]: https://www.virtualbox.org/
