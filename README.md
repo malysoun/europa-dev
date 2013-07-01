@@ -177,7 +177,7 @@ like so.
     export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
 ### Useful bash aliases
-alias vp="vagrant provision"
-alias vs="vagrant ssh"
-alias vu="vagrant up"
-alias vd="vagrant destroy"
+    alias vp="vagrant provision"
+    alias vs="vagrant ssh"
+    alias vu="vagrant up"
+    alias vd="vagrant destroy"
