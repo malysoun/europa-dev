@@ -193,12 +193,26 @@ If changes are made to the upstream repo that you want to pull in, run:
 Notes
 -----
 
-Vagrant has a bug regarding fedora networking.  You may need to apply
-https://github.com/mitchellh/vagrant/pull/1738 for fedora 18 to
-load the networking properly.
+* VirtualBox 4.2.14 has a [Vagrant bug][] you may encounter. When running
+  `vagrant up`, you may get this error:
+  
+      Progress object failure: NS_ERROR_CALL_FAILED
+  
+  If so, you need to create a manifest file. Run this:
+  
+      cd ~/.vagrant.d/boxes/fedora18/virtualbox
+      openssl sha1 *.vmdk *.ovf > box.mf
+  
+  Then try again.
 
-To alway choose vmware_fusion as your default provider set the env variable
-like so.
+[Vagrant bug]: https://www.virtualbox.org/ticket/11895
+
+* Vagrant has a bug regarding fedora networking.  You may need to apply
+  https://github.com/mitchellh/vagrant/pull/1738 for fedora 18 to
+  load the networking properly.
+
+* To alway choose vmware_fusion as your default provider set the env variable
+  like so.
 
     export VAGRANT_DEFAULT_PROVIDER="vmware_fusion"
 
