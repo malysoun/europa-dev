@@ -21,7 +21,6 @@ yum/
 /chef/
 /include/
 /lib/
-/src/
 /var/
 /dist/
 /build/
@@ -49,3 +48,6 @@ chef
 src
 
 *~
+
+# OS X generated files
+.DS_Store
