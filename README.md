@@ -196,7 +196,7 @@ Notes
 * VirtualBox 4.2.14 has a [Vagrant bug][] you may encounter. When running
   `vagrant up`, you may get this error:
   
-      Progress object failure: NS_ERROR_CALL_FAILED
+        Progress object failure: NS_ERROR_CALL_FAILED
   
   If so, you need to create a manifest file. Run this:
   
