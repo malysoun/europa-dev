@@ -157,6 +157,7 @@ def clone_europa(name, root, repository, branch):
         abort_unless()
         shell("rm -rf {0}".format(root))
     git("clone {0} {1}".format(repository, root))
+    git("branch master", cwd=root)
     git("flow init -d".format(repository, root), cwd=root)
 
     if branch != "master":
