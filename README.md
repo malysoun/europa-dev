@@ -200,8 +200,8 @@ Notes
   
   If so, you need to create a manifest file. Run this:
   
-      cd ~/.vagrant.d/boxes/fedora18/virtualbox
-      openssl sha1 *.vmdk *.ovf > box.mf
+        cd ~/.vagrant.d/boxes/fedora18/virtualbox
+        openssl sha1 *.vmdk *.ovf > box.mf
   
   Then try again.
 
