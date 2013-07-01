@@ -17,13 +17,9 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
     This will verify that several things are installed and try to install them
     (asking for confirmation first) if not:
     
-    - [Virtualbox][]
-    - [Vagrant][]
-    - [git-flow][]
-
-[Virtualbox]: https://www.virtualbox.org/
-[Vagrant]: http://www.vagrantup.com/
-[git-flow]: https://github.com/nvie/gitflow 
+    * [Virtualbox][]
+    * [Vagrant][]
+    * [git-flow][]
 
    2. Execute `workon europa` to enter the sandboxed development environment
       (issue the command `deactivate` to leave the sandbox). You can install
@@ -84,6 +80,11 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
       modifying your hosts file.
 
    10. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
+
+
+[Virtualbox]: https://www.virtualbox.org/
+[Vagrant]: http://www.vagrantup.com/
+[git-flow]: https://github.com/nvie/gitflow 
 
 
 Working with your environment
