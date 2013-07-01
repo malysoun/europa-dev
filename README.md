@@ -15,11 +15,8 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
         $ EUROPAPRIVATE= python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go)"
 
     This will verify that several things are installed and try to install them
-    (asking for confirmation first) if not:
-    
-    * [Virtualbox][]
-    * [Vagrant][]
-    * [git-flow][]
+    (asking for confirmation first) if not, including [Virtualbox][], 
+    [Vagrant][] and [git-flow][].
 
    2. Execute `workon europa` to enter the sandboxed development environment
       (issue the command `deactivate` to leave the sandbox). You can install
