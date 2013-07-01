@@ -54,14 +54,14 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
 
    7. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
 
-   8. Optional: Install SSH keys (if you skipped step 5). Run:
+   8. Optional: Install SSH keys (if you skipped step 5). Run on the host box:
 
         cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
 
       Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
       public key.
 
-   9. Set up SSH config. Run: 
+   9. Set up SSH config. Run on the host box: 
 
         cat <<EOF>> ~/.ssh/config
         Host zendev
