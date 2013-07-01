@@ -14,6 +14,17 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
 
         $ EUROPAPRIVATE= python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go)"
 
+    This will verify that several things are installed and try to install them
+    (asking for confirmation first) if not:
+    
+    - [Virtualbox][]
+    - [Vagrant][]
+    - [git-flow][]
+
+[Virtualbox]: https://www.virtualbox.org/
+[Vagrant]: http://www.vagrantup.com/
+[git-flow]: https://github.com/nvie/gitflow 
+
    2. Execute `workon europa` to enter the sandboxed development environment
       (issue the command `deactivate` to leave the sandbox). You can install
       Python packages using the `pip` in your `PATH` without affecting the rest of
@@ -69,6 +80,9 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
             HostName 192.168.33.10
         EOF
 
+      You will them be able to run "ssh zendev" without specifying user or
+      modifying your hosts file.
+
    10. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
 
 
@@ -101,9 +115,9 @@ To see an extended status of your repos, run `git zen xstatus`.
 To pull changes for all of your repos, run `git zen pull`.
 
 ### git zen feature
-`git zen feature` encapsulates the workflow for developing against Zenoss
-code. You should use it to make sure you don't miss something. Here's how it
-works:
+`git zen feature` encapsulates the workflow (based on [git-flow][]) for
+developing against Zenoss code. You should use it to make sure you don't miss
+something. Here's how it works:
 
    1. `git zen feature start my-new-feature`.
       This will create a local feature branch, based off `develop`, called
@@ -120,7 +134,7 @@ works:
   
    3. `git zen feature request [my-new-feature]`. If you're on the branch,
       you don't have to specify its name. This command will make sure that 
-      you've pushed up any outstanding changes and create a pull request to 
+      you've pushed up any outstanding changes and create a [pull request][] to 
       get your code merged into the `develop` branch. It is the equivalent of
       performing these actions:
 
@@ -146,11 +160,13 @@ works:
          $ git push origin :feature/my-new-feature
          $ git pull  # Fast-forward develop
 
+[pull request]: https://help.github.com/articles/using-pull-requests
+
 
 Modifying europa-dev
 --------------------
 Feel free to keep your own copy of europa-dev with your own custom modifications.
-Once you've created your environment, simply create a fork of europa-dev in
+Once you've created your environment, simply [create a fork][] of europa-dev in
 GitHub, then execute:
 
     $ git remote set-url origin https://github.com/{MYUSERNAME}/europa-dev
@@ -163,6 +179,7 @@ If changes are made to the upstream repo that you want to pull in, run:
 
     $ git pull upstream master
 
+[create a fork]: https://help.github.com/articles/fork-a-repo
 
 Notes
 -----
