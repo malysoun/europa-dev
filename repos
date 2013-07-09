@@ -8,6 +8,7 @@ src/metric-service, https://github.com/zenoss/query
 src/metric-consumer, https://github.com/zenoss/zenoss.metric.consumer
 src/metric-tsdb, https://github.com/zenoss/zenoss.metric.tsdb
 src/zenoss-extjs, https://github.com/zenoss/zenoss-extjs
+src/index-service, https://github.com/zenoss/index-service
 src/zenpacks/ZenPacks.zenoss.ZenJMX, https://github.com/zenoss/ZenPacks.zenoss.ZenJMX
 chef/cookbooks/java, https://github.com/zenoss/java.git
 chef/cookbooks/zenoss, https://github.com/zenoss/zenoss-dev-cookbook.git
