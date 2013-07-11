@@ -38,10 +38,10 @@ def get_oauth_token():
     return result
 
 
-def github_api(method, url, data=None):
+def github_api(method, url, data=None, params=None):
     token = get_oauth_token()
     return requests.request(
-        method, "https://api.github.com" + url, data=data,
+        method, "https://api.github.com" + url, data=data, params=params,
         headers={"Authorization": "token %s" % token}
     ).json()
 
@@ -389,11 +389,11 @@ class feature(command):
         response = github_api(
             "GET",
             "/repos/{0}/{1}/pulls".format(owner, repo),
-            data=json.dumps({
+            params={
                 "state": "open",
-                "head": branch,
+                "head": "zenoss:"+branch,
                 "base": "develop"
-            }))
+            })
         if response:
             print "A pull request is still open. Get it reviewed."
             return
