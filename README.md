@@ -1,6 +1,13 @@
 Zenoss Europa Development Environment
 =====================================
 
+Requirements
+------------
+   1. VirtualBox (tested with 4.2.14)  (virtualbox.org)
+
+   2. Vagrant (tested with 1.2.2)  (vagrantup.com)
+
+
 Installation
 ------------
 NOTE: If you're on OS X with a case-insensitive filesystem, you should create a case-sensitive partition for your source, or Python imports will get confused.
@@ -27,7 +34,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
 
     This will verify that several things are installed and try to install them
     (asking for confirmation first) if not, including [Virtualbox][], 
-    [Vagrant][] and [git-flow][].
+    [Vagrant][], [Berkshelf][] and [git-flow][].
 
    3. Execute `workon europa` to enter the sandboxed development environment
       (issue the command `deactivate` to leave the sandbox). You can install
@@ -92,6 +99,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
 
 [Virtualbox]: https://www.virtualbox.org/
 [Vagrant]: http://www.vagrantup.com/
+[Berkshelf]: http://berkshelf.com/
 [git-flow]: https://github.com/nvie/gitflow 
 
 
@@ -207,9 +215,9 @@ Notes
 
 [Vagrant bug]: https://www.virtualbox.org/ticket/11895
 
-* Vagrant has a bug regarding fedora networking.  You may need to apply
-  https://github.com/mitchellh/vagrant/pull/1738 for fedora 18 to
-  load the networking properly.
+* Vagrant has a bug regarding Fedora networking when you attempt to start two boxes 
+  with the same private IP, in that the message is confusing (refers to interface p7p1). 
+  If you encounter this, simply change the Vagrantfile to have a different IP.
 
 * To alway choose vmware_fusion as your default provider set the env variable
   like so.
