@@ -96,7 +96,9 @@ Vagrant.configure("2") do |config|
         },
         :maven  => {
             :version   => 3,
-            :setup_bin => true
+            :setup_bin => true,
+            :repositories => ["http://repo1.maven.apache.org/maven2", "http://nexus.zendev.org:8081/nexus/content/repositories/releases"]
+
         },
         :python => {
             :version => "2.7.3"
