@@ -173,7 +173,7 @@ if __name__ == "__main__":
     verify("vagrant")
     verify("VirtualBox")
 
-    shell("vagrant gem install vagrant-berkshelf")
+    shell("vagrant plugin install vagrant-berkshelf")
 
     if not verify("virtualenvwrapper.sh", description="virtualenvwrapper", die=False):
         install_python("virtualenvwrapper", sudo=True)
