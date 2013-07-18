@@ -214,8 +214,7 @@ class clone(command):
         result = git("clone", config.remotepath(), config.localpath())
         if result == 0:
             shell("git flow init -d 2>&1 >/dev/null", cwd=config.localpath())
-            shell("git branch --set-upstream-to=origin/develop develop 2>&1 >/dev/null", 
-                    cwd=config.localpath())
+            retrack().execute(value, config)
         return value if result == 0 else 1
 
     def perform(self, args):
@@ -329,13 +328,20 @@ class retrack(command):
     cmd = None
     help = "Verify and fix that local develop branches track origin"
 
+    def execute(self, value, config):
+        say("Ensuring that {0} tracks remote develop".format(
+            config.rootpath()))
+        rc, stdout, stderr = git_out("--version")
+        version = stdout[0].split()[-1]
+        if version.startswith("1.8"):
+            opts = ("-u", "origin/develop", "develop")
+        else:
+            opts = ("--set-upstream", "develop", "origin/develop")
+        git("branch", *opts, cwd=config.localpath())
+
     def perform(self, args):
         configs = self.repositories.exist()
-        for config in configs:
-            say("Ensuring that {0} tracks remote develop".format(
-                config.rootpath()))
-            git("branch", "--set-upstream-to=origin/develop", "develop", 
-                    cwd=config.localpath())
+        return configs.reduce(self.execute, 0)
 
 
 class feature(command):
