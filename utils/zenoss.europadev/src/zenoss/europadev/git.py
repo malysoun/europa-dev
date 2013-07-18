@@ -324,6 +324,19 @@ class lsfiles(command):
         return configs.reduce(self.execute, 0)
 
 
+class retrack(command):
+    cmd = None
+    help = "Verify and fix that local develop branches track origin"
+
+    def perform(self, args):
+        configs = self.repositories.exist()
+        for config in configs:
+            say("Ensuring that {0} tracks remote develop".format(
+                config.rootpath()))
+            git("branch", "--set-upstream-to=origin/develop", "develop", 
+                    cwd=config.localpath())
+
+
 class feature(command):
     cmd = None
     help = "Manage feature workflow"
