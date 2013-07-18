@@ -214,7 +214,8 @@ class clone(command):
         result = git("clone", config.remotepath(), config.localpath())
         if result == 0:
             shell("git flow init -d 2>&1 >/dev/null", cwd=config.localpath())
-            shell("git branch --set-upstream develop origin/develop 2>&1 >/dev/null", cwd=config.localpath())
+            shell("git branch --set-upstream-to=origin/develop develop 2>&1 >/dev/null", 
+                    cwd=config.localpath())
         return value if result == 0 else 1
 
     def perform(self, args):
