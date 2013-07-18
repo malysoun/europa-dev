@@ -3,14 +3,22 @@ Zenoss Europa Development Environment
 
 Requirements
 ------------
-   1. VirtualBox (tested with 4.2.14)  (virtualbox.org)
+   1. [VirtualBox][] (tested with 4.2.10-16)
+   2. [Vagrant][] (tested with 1.2.2)
+   3. Early adopters may also need to install the Vagrant [Berkshelf][] plugin:
 
-   2. Vagrant (tested with 1.2.2)  (vagrantup.com)
+          vagrant plugin install vagrant-berkshelf
 
+      If, however, you're about to run this from scratch, it will be installed
+      for you.
+   4. Understand the [git-flow][] workflow; our `git zen feature` workflow is
+      a superset thereof.
 
 Installation
 ------------
-NOTE: If you're on OS X with a case-insensitive filesystem, you should create a case-sensitive partition for your source, or Python imports will get confused.
+NOTE: If you're on OS X with a case-insensitive filesystem, you should create
+a case-sensitive partition or sparse bundle for your source, or Python imports
+will get confused.
 
    1. Set up git credentials to avoid being asked for passwords constantly. On
       OS X, run:
@@ -33,7 +41,7 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
         $ EUROPAPRIVATE= python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go)"
 
     This will verify that several things are installed and try to install them
-    (asking for confirmation first) if not, including [Virtualbox][], 
+    (asking for confirmation first) if not, including [VirtualBox][], 
     [Vagrant][], [Berkshelf][] and [git-flow][].
 
    3. Execute `workon europa` to enter the sandboxed development environment
@@ -74,7 +82,10 @@ NOTE: If you're on OS X with a case-insensitive filesystem, you should create a 
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   8. You'll be in the box as the `vagrant` user, but Zenoss development should happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the default password for `zendev` is `zendev`. `sudo su - zendev` to enter the Zenoss environment.
+   8. You'll be in the box as the `vagrant` user, but Zenoss development should
+      happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the
+      default password for `zendev` is `zendev`. `sudo su - zendev` to enter
+      the Zenoss environment.
 
    9. Optional: Install SSH keys (if you skipped step 6). Run on the host box:
 
