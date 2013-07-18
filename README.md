@@ -131,6 +131,9 @@ To see an extended status of your repos, run `git zen xstatus`.
 
 To pull changes for all of your repos, run `git zen pull`.
 
+To force the develop branch of all repos to track origin/develop, run `git zen
+retrack`.
+
 ### git zen feature
 `git zen feature` encapsulates the workflow (based on [git-flow][]) for
 developing against Zenoss code. You should use it to make sure you don't miss
