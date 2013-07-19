@@ -77,7 +77,6 @@ will get confused.
       will be executed by Vagrant on the dev box as root at the end of
       provisioning. Here's an example:
 
-          ```bash
           #!/usr/bin/env bash
 
           # Install some dependencies
@@ -122,7 +121,6 @@ will get confused.
 
           /home/zendev/dotfiles/bootstrap.sh -f 2>&1 > /dev/null
           EOF
-          ```
 
    8. Start up your dev box.
     - VirtualBox:
