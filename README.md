@@ -73,54 +73,11 @@ will get confused.
    7. Optional: Add the custom script `~/.europarc`
 
       If you have certain things you want to run every time you provision
-      a vagrant box, you can put them in a script at `~/.europarc`. This script
-      will be executed by Vagrant on the dev box as root at the end of
-      provisioning. Here's an example:
-
-          #!/usr/bin/env bash
-
-          # Install some dependencies
-
-          yum -y install tmux vim git-core
-
-          # Perform a bunch of actions as zendev user
-
-          su - zendev <<EOF
-
-          # Set up SSH keys
-
-          mkdir -p ~/.ssh
-
-          cat <<EOS> /home/zendev/.ssh/config
-          StrictHostKeyChecking no
-          EOS
-
-          cat <<EOS> /home/zendev/.ssh/authorized_keys
-          [contents of ~/.ssh/id_dsa.pub on host]
-          EOS
-
-          cat <<EOS> /home/zendev/.ssh/id_dsa
-          [contents of ~/.ssh/id_dsa on host]
-          EOS
-
-          cat <<EOS> /home/zendev/.ssh/id_dsa.pub
-          [contents of ~/.ssh/id_dsa.pub on host]
-          EOS
-
-          chmod 700 ~/.ssh && chmod 600 ~/.ssh/*;
-
-          # Install dotfiles
-
-          if [ ! -d /home/zendev/dotfiles ]; then
-              cd /home/zendev && git clone git@github.com:iancmcc/dotfiles;
-          else
-              cd /home/zendev/dotfiles && git pull;
-          fi
-
-          cd /home/zendev/dotfiles && git submodule init && git submodule update
-
-          /home/zendev/dotfiles/bootstrap.sh -f 2>&1 > /dev/null
-          EOF
+      a vagrant box (SSH keys, dotfiles, custom packages), you can put them in
+      a script at `~/.europarc`. This script will be executed by Vagrant on the
+      dev box as root at the end of provisioning. A 
+      [sample script](https://github.com/zenoss/europa-dev/blob/develop/europarc.sample) 
+      is included with europa-dev.
 
    8. Start up your dev box.
     - VirtualBox:
@@ -157,7 +114,9 @@ will get confused.
       You will them be able to run "ssh zendev" without specifying user or
       modifying your hosts file.
 
-   11. The source checkouts on your host box are mounted via NFS on the dev box. You can use `git zen` (or just `git`) locally to modify them, or edit them locally.
+   11. The source checkouts on your host box are mounted via NFS on the dev
+       box. You can use `git zen` (or just `git`) locally to modify them, or
+       edit them locally.
 
 
 [Virtualbox]: https://www.virtualbox.org/
