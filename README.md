@@ -77,52 +77,52 @@ will get confused.
       will be executed by Vagrant on the dev box as root at the end of
       provisioning. Here's an example:
 
-```bash
-#!/usr/bin/env bash
+          ```bash
+          #!/usr/bin/env bash
 
-# Install some dependencies
+          # Install some dependencies
 
-yum -y install tmux vim git-core
+          yum -y install tmux vim git-core
 
-# Perform a bunch of actions as zendev user
+          # Perform a bunch of actions as zendev user
 
-su - zendev <<EOF
+          su - zendev <<EOF
 
-# Set up SSH keys
+          # Set up SSH keys
 
-mkdir -p ~/.ssh
+          mkdir -p ~/.ssh
 
-cat <<EOS> /home/zendev/.ssh/config
-StrictHostKeyChecking no
-EOS
+          cat <<EOS> /home/zendev/.ssh/config
+          StrictHostKeyChecking no
+          EOS
 
-cat <<EOS> /home/zendev/.ssh/authorized_keys
-[contents of ~/.ssh/id_dsa.pub on host]
-EOS
+          cat <<EOS> /home/zendev/.ssh/authorized_keys
+          [contents of ~/.ssh/id_dsa.pub on host]
+          EOS
 
-cat <<EOS> /home/zendev/.ssh/id_dsa
-[contents of ~/.ssh/id_dsa on host]
-EOS
+          cat <<EOS> /home/zendev/.ssh/id_dsa
+          [contents of ~/.ssh/id_dsa on host]
+          EOS
 
-cat <<EOS> /home/zendev/.ssh/id_dsa.pub
-[contents of ~/.ssh/id_dsa.pub on host]
-EOS
+          cat <<EOS> /home/zendev/.ssh/id_dsa.pub
+          [contents of ~/.ssh/id_dsa.pub on host]
+          EOS
 
-chmod 700 ~/.ssh && chmod 600 ~/.ssh/*;
+          chmod 700 ~/.ssh && chmod 600 ~/.ssh/*;
 
-# Install dotfiles
+          # Install dotfiles
 
-if [ ! -d /home/zendev/dotfiles ]; then
-    cd /home/zendev && git clone git@github.com:iancmcc/dotfiles;
-else
-    cd /home/zendev/dotfiles && git pull;
-fi
+          if [ ! -d /home/zendev/dotfiles ]; then
+              cd /home/zendev && git clone git@github.com:iancmcc/dotfiles;
+          else
+              cd /home/zendev/dotfiles && git pull;
+          fi
 
-cd /home/zendev/dotfiles && git submodule init && git submodule update
+          cd /home/zendev/dotfiles && git submodule init && git submodule update
 
-/home/zendev/dotfiles/bootstrap.sh -f 2>&1 > /dev/null
-EOF
-```
+          /home/zendev/dotfiles/bootstrap.sh -f 2>&1 > /dev/null
+          EOF
+          ```
 
    8. Start up your dev box.
     - VirtualBox:
