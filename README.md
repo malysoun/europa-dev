@@ -70,7 +70,61 @@ will get confused.
      Paste the contents of ~/.ssh/id_rsa.pub or ~/.ssh/id_dsa.pub as the value
      assigned to authorized_keys.
 
-   7. Start up your dev box.
+   7. Optional: Add the custom script `~/.europarc`
+
+      If you have certain things you want to run every time you provision
+      a vagrant box, you can put them in a script at `~/.europarc`. This script
+      will be executed by Vagrant on the dev box as root at the end of
+      provisioning. Here's an example:
+
+          ```bash
+          #!/usr/bin/env bash
+ 
+          # Install some dependencies
+
+          yum -y install tmux vim git-core
+ 
+          # Perform a bunch of actions as zendev user
+
+          su - zendev <<EOF
+ 
+          # Set up SSH keys
+
+          mkdir -p ~/.ssh
+ 
+          cat <<EOS> /home/zendev/.ssh/config
+          StrictHostKeyChecking no
+          EOS
+ 
+          cat <<EOS> /home/zendev/.ssh/authorized_keys
+          [contents of ~/.ssh/id_dsa.pub on host]
+          EOS
+ 
+          cat <<EOS> /home/zendev/.ssh/id_dsa
+          [contents of ~/.ssh/id_dsa on host]
+          EOS
+ 
+          cat <<EOS> /home/zendev/.ssh/id_dsa.pub
+          [contents of ~/.ssh/id_dsa.pub on host]
+          EOS
+ 
+          chmod 700 ~/.ssh && chmod 600 ~/.ssh/*;
+ 
+          # Install dotfiles
+
+          if [ ! -d /home/zendev/dotfiles ]; then
+              cd /home/zendev && git clone git@github.com:iancmcc/dotfiles;
+          else
+              cd /home/zendev/dotfiles && git pull;
+          fi
+ 
+          cd /home/zendev/dotfiles && git submodule init && git submodule update
+ 
+          /home/zendev/dotfiles/bootstrap.sh -f 2>&1 > /dev/null
+          EOF
+          ```
+
+   8. Start up your dev box.
     - VirtualBox:
       
             $ cd vagrant/dev
@@ -82,19 +136,19 @@ will get confused.
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   8. You'll be in the box as the `vagrant` user, but Zenoss development should
+   9. You'll be in the box as the `vagrant` user, but Zenoss development should
       happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the
       default password for `zendev` is `zendev`. `sudo su - zendev` to enter
       the Zenoss environment.
 
-   9. Optional: Install SSH keys (if you skipped step 6). Run on the host box:
+   10. Optional: Install SSH keys (if you skipped step 6 and 7). Run on the host box:
 
         cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
 
       Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
       public key.
 
-   10. Set up SSH config. Run on the host box: 
+   11. Set up SSH config. Run on the host box: 
 
         cat <<EOF>> ~/.ssh/config
         Host zendev
@@ -211,6 +265,9 @@ If changes are made to the upstream repo that you want to pull in, run:
     $ git pull upstream master
 
 [create a fork]: https://help.github.com/articles/fork-a-repo
+
+.europarc
+---------
 
 Notes
 -----
