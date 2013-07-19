@@ -118,5 +118,9 @@ Vagrant.configure("2") do |config|
   end
 
   # Run any custom commands.
-  config.vm.provision :shell, :path => File.expand_path("~/.europarc")
+  mypath = File.expand_path("~/.europarc")
+  if File.exist? mypath
+      config.vm.provision :shell, :path => mypath
+  end
+
 end
