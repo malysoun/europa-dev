@@ -269,6 +269,10 @@ class xstatus(command):
         parser.add_argument("--with-chef", dest="chef", action="store_true",
                 default=False, 
                 help="Include non-Zenoss chef cookbooks in output.")
+        parser.add_argument("--all-zenpacks", dest="zenpacks", 
+                action="store_true",
+                default=False, 
+                help="Include unmodified ZenPacks in output")
 
     #path, repo, branch, untracked, tracked, unstaged,
     def execute(self, summaries, config):
@@ -295,14 +299,15 @@ class xstatus(command):
                            reverse=True)
         for summary in summaries:
             s = self.__formatter.format(*summary)
-            if args.chef or (not s.startswith("chef/" ) 
+            if args.chef or (not s.startswith("chef/") 
                 or s.startswith("chef/cookbooks/zenoss")):
                 if 'X' == summary[2]:
                     print green(s)
                 elif 'X' == summary[3]:
                     print blue(s)
                 else:
-                    print s
+                    if args.zenpacks or not s.startswith("src/zenpacks"):
+                        print s
 
 
 class lsfiles(command):
