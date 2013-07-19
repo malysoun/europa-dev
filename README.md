@@ -223,8 +223,6 @@ If changes are made to the upstream repo that you want to pull in, run:
 
 [create a fork]: https://help.github.com/articles/fork-a-repo
 
-.europarc
----------
 
 Notes
 -----
