@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
 
   tsdbport = 4242
 
+  config.berkshelf.enabled = true
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box     = "fedora18"
 
