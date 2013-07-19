@@ -10,6 +10,7 @@ def main():
     say("Updating europa-dev")
     root = Configurations.get().root()
     shell("git pull", cwd=root)
+    shell("git pull", cwd="%s/private" % root)
     say("Cloning any new repos")
     clone().perform(None)
     say("Installing utils package to register any new bin scripts")
