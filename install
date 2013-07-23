@@ -107,7 +107,8 @@ def git(cmd, **kwargs):
 
 
 def which(cmd):
-    p = subprocess.Popen(["which", cmd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(["which", cmd], stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     return stdout
 
