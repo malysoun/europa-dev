@@ -49,7 +49,11 @@ def github_api(method, url, data=None, params=None):
 def repo_info():
     remotes = (s.strip() for s in git_out("remote", "-v")[1])
     branch = git_out("symbolic-ref", "-q", "HEAD")[1][0].strip()
-    branch = branch.rsplit('/', 1)[-1]
+    segments = branch.split('/')
+    if segments[-2] == 'feature':
+        branch = "/".join(segments[-2:])
+    else:
+        branch = segments[-1]
     for line in remotes:
         if line.startswith('origin'):
             line = line.rsplit(":", 1)[-1]
