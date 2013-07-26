@@ -2,6 +2,7 @@
   "builders": [
     {
       "iso_checksum_type": "md5",
+      "headless": true,
       "boot_command": [
         "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><enter><wait>"
       ],
@@ -47,7 +48,7 @@
         "scripts/base.sh",
         "scripts/ruby.sh",
         "scripts/chef.sh",
-        "scripts/dependencies.sh",
+        "scripts/zenoss-dependencies.sh",
         "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
         "scripts/cleanup.sh",
