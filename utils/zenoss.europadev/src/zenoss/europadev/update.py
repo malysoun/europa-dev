@@ -17,3 +17,5 @@ def main():
     shell("pip install -e utils/zenoss.europadev > /dev/null 2>&1", cwd=root)
     say("Ensuring all develop branches track origin/develop")
     shell("git zen retrack > /dev/null 2>&1")
+    say("Pulling any Zenoss cookbook changes")
+    shell("git pull > /dev/null 2>&1", cwd="%s/chef/cookbooks/zenoss" % root)
