@@ -51,3 +51,6 @@ src
 
 # OS X generated files
 .DS_Store
+
+vagrant/packer/packer_cache
+*.box
