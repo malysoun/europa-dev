@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   # Comment out the previous 2 entries and uncomment these 3 entries to
   # try the new 64bit fedora base box with a default zendev user. This
   # box does not have a "vagrant" user
-  #config.vm.box     = "europa-zdev"
+  #config.vm.box     = "europa-zendev"
   #config.vm.box_url = "http://vagrant.zendev.org/boxes/europa_zendev_virtualbox.box"
   # Uncomment if using a base box with zendev user and without a vagrant
   #config.ssh.username = "zendev"
