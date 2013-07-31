@@ -49,6 +49,7 @@
         "scripts/ruby.sh",
         "scripts/chef.sh",
         "scripts/zenoss-dependencies.sh",
+        "scripts/devtools.sh",
         "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
         "scripts/cleanup.sh",
@@ -63,6 +64,9 @@
     }
   ],
   "post-processors": [
-      "vagrant"
+      {
+       "type": "vagrant",
+       "output": "europa_zendev_{{.Provider}}.box"
+      }
   ]
 }

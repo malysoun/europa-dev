@@ -34,9 +34,7 @@
       "locked_version": "2.3.0"
     },
     "java": {
-      "locked_version": "1.11.5",
-      "git": "https://github.com/zenoss/java.git",
-      "ref": "da67200dce099cf9c3f129f5fb395ebe768ec00c"
+      "locked_version": "1.12.0"
     },
     "maven": {
       "locked_version": "0.16.3",

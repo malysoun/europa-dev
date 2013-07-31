@@ -15,3 +15,5 @@ yum -y install \
 # Install Chef
 gem install --no-ri --no-rdoc chef
 
+update-alternatives --install /usr/bin/chef-solo chef-solo /usr/local/bin/chef-solo 1061
+

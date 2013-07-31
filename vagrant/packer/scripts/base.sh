@@ -8,7 +8,7 @@ sed -i "s/enabled=0/enabled=1/" /etc/yum.repos.d/fedora-updates-testing.repo
 # image will refuse to start under Vagrant.
 yum -y update --exclude kernel*
 
-yum -y install gcc make gcc-c++ kernel-devel-`uname -r` zlib-devel openssl-devel readline-devel sqlite-devel perl wget dkms tar bzip2 net-tools
+yum -y install gcc make gcc-c++ kernel-devel-`uname -r` zlib-devel openssl-devel readline-devel sqlite-devel perl wget dkms tar bzip2 net-tools nfs-utils
 
 rm -f /etc/localtime
 ln -s /usr/share/zoneinfo/UTC /etc/localtime
