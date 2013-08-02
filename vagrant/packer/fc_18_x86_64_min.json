@@ -48,11 +48,10 @@
         "scripts/base.sh",
         "scripts/ruby.sh",
         "scripts/chef.sh",
-        "scripts/zenoss-dependencies.sh",
         "scripts/devtools.sh",
         "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
-        "scripts/cleanupzendev.sh",
+        "scripts/cleanup.sh",
         "scripts/zerodisk.sh"
       ],
       "type": "shell",
@@ -66,7 +65,7 @@
   "post-processors": [
       {
        "type": "vagrant",
-       "output": "europa_zendev_{{.Provider}}.box"
+       "output": "Fedora_18_x86_64_{{.Provider}}.box"
       }
   ]
 }

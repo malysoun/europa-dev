@@ -46,6 +46,7 @@
     {
       "scripts": [
         "scripts/base.sh",
+	"scripts/docker_repo.sh",
         "scripts/ruby.sh",
         "scripts/chef.sh",
         "scripts/zenoss-dependencies.sh",
@@ -66,7 +67,7 @@
   "post-processors": [
       {
        "type": "vagrant",
-       "output": "europa_zendev_{{.Provider}}.box"
+       "output": "europa_zendev_docker{{.Provider}}.box"
       }
   ]
 }

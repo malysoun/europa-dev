@@ -1,3 +1,6 @@
 yum -y install \
     vim-enhanced \
-    emacs-nox
+    emacs-nox \
+    golang-vim \
+    emacs-golang \
+    git
