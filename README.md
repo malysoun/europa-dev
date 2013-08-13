@@ -12,7 +12,8 @@ Requirements
       If, however, you're about to run this from scratch, it will be installed
       for you.
    4. Understand the [git-flow][] workflow; our `git zen feature` workflow is
-      a superset thereof.
+      a superset thereof. Check out DataSift's [git-flow for GitHub][]
+      documentation for a description of a very similar workflow.
 
 Installation
 ------------
@@ -123,6 +124,7 @@ will get confused.
 [Vagrant]: http://www.vagrantup.com/
 [Berkshelf]: http://berkshelf.com/
 [git-flow]: https://github.com/nvie/gitflow 
+[git-flow for GitHub]: http://datasift.github.io/gitflow/GitFlowForGitHub.html
 
 
 Working with your environment
@@ -158,8 +160,10 @@ retrack`.
 
 ### git zen feature
 `git zen feature` encapsulates the workflow (based on [git-flow][]) for
-developing against Zenoss code. You should use it to make sure you don't miss
-something. Here's how it works:
+developing against Zenoss code, in a GitHub-aware way. See the image in
+DataSift's [git-flow for GitHub][] docs for a diagram of the branching model.
+You should use `git zen feature` to make sure you don't miss something. Here's
+how it works:
 
    1. `git zen feature start my-new-feature`.
       This will create a local feature branch, based off `develop`, called
