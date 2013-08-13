@@ -228,7 +228,6 @@ If changes are made to the upstream repo that you want to pull in, run:
 
 Notes
 -----
-
 * VirtualBox 4.2.14 has a [Vagrant bug][] you may encounter. When running
   `vagrant up`, you may get this error:
   
