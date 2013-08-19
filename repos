@@ -9,7 +9,7 @@ src/metric-consumer, https://github.com/zenoss/zenoss.metric.consumer
 src/metric-tsdb, https://github.com/zenoss/zenoss.metric.tsdb
 src/zenoss-extjs, https://github.com/zenoss/zenoss-extjs
 src/index-service, https://github.com/zenoss/index-service
-src/hipache-nginx, https://github.com/zenoss/hipache-nginx
+src/zproxy, https://github.com/zenoss/zproxy
 chef/cookbooks/zenoss, https://github.com/zenoss/zenoss-dev-cookbook.git
 chef/cookbooks/opentsdb, https://github.com/zenoss/opentsdb.git
 src/zenpacks/ZenPacks.zenoss.ApacheMonitor, https://github.com/zenoss/ZenPacks.zenoss.ApacheMonitor

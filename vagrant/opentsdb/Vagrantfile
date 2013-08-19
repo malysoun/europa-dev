@@ -74,7 +74,8 @@ Vagrant.configure("2") do |config|
         },
       :opentsdb => {
             :tsdb_port => tsdbport,
-            :opentsdb_branch => "v1.1.0" 
+            :opentsdb_branch => "v2.0.0RC1",
+            :hbase_version => "0.94.10"
       }
     }
   end
