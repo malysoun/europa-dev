@@ -1,6 +1,8 @@
 Zenoss Europa Development Environment
 =====================================
 
+__Important: Do not clone this repository. Read on for instructions.__
+
 Requirements
 ------------
    1. [VirtualBox][] (tested with 4.2.10-16)
