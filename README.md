@@ -28,7 +28,7 @@ will get confused.
       Zenoss's custom Python environment.  Run ``which python``; if it's under
       $ZENHOME (e.g., /opt/zenoss/bin/python), either remove the modifications
       that add $ZENHOME/bin to your $PATH or specify system python (e.g.,
-      /usr/bin/python) in step 3. Consider using a function like [``zenv``][]
+      /usr/bin/python) in step 3. Consider using a function like [zenv][]
       to switch between Zenoss and system Python environments.
 
    2. Set up git credentials to avoid being asked for passwords constantly. On
