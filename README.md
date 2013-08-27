@@ -6,7 +6,7 @@ __Important: Do not clone this repository. Read on for instructions.__
 Requirements
 ------------
    1. [VirtualBox][] (tested with 4.2.10-16)
-   2. [Vagrant][] (tested with 1.2.2)
+   2. [Vagrant][] (tested with 1.2.2, __will not__ run with 1.1.x)
    3. Early adopters may also need to install the Vagrant [Berkshelf][] plugin:
 
           vagrant plugin install vagrant-berkshelf
