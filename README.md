@@ -260,6 +260,12 @@ Notes
   with the same private IP, in that the message is confusing (refers to interface p7p1). 
   If you encounter this, simply change the Vagrantfile to have a different IP.
 
+  On Vagrant >= 1.2.5, this may occur without a second box being up (see [open
+  issue][]). Applying the [patch][] to Vagrant itself should fix the problem.
+
+[open issue]: https://github.com/mitchellh/vagrant/pull/1738
+[patch]: https://github.com/mitchellh/vagrant/commit/ea89b43a06bf65d3ae0fa90924caeb67d62b82d8 
+
 * To alway choose vmware_fusion as your default provider set the env variable
   like so.
 
