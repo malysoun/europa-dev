@@ -1,3 +1,4 @@
+import os
 from .git import clone, say, warn, debug
 from .repository import Configurations
 from .termutils import *
@@ -10,7 +11,9 @@ def main():
     say("Updating europa-dev")
     root = Configurations.get().root()
     shell("git pull", cwd=root)
-    shell("git pull", cwd="%s/private" % root)
+    private_path = "%s/private" % root
+    if os.path.isdir(private_path):
+        shell("git pull", cwd=private_path)
     say("Cloning any new repos")
     clone().perform(None)
     say("Installing utils package to register any new bin scripts")
