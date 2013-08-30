@@ -64,11 +64,7 @@ will get confused.
 
         $ git zen xstatus
     
-   6. Ensure nfs file sharing is turned on
-      - Mac (Mountain Lion) -- http://support.apple.com/kb/HT4695
-      - Ubuntu: `sudo apt-get install nfs-kernel-server`
-
-   7. Optional: Set up authorized_keys. Find the line in Vagrantfile:
+   6. Optional: Set up authorized_keys. Find the line in Vagrantfile:
 
         chef.json = {
             :zenoss => {
@@ -81,7 +77,7 @@ will get confused.
      Paste the contents of ~/.ssh/id_rsa.pub or ~/.ssh/id_dsa.pub as the value
      assigned to authorized_keys.
 
-   8. Optional: Add the custom script `~/.europarc`
+   7. Optional: Add the custom script `~/.europarc`
 
       If you have certain things you want to run every time you provision
       a vagrant box (SSH keys, dotfiles, custom packages), you can put them in
@@ -90,7 +86,7 @@ will get confused.
       [sample script](https://github.com/zenoss/europa-dev/blob/develop/europarc.sample) 
       is included with europa-dev.
 
-   9. Start up your dev box.
+   8. Start up your dev box.
     - VirtualBox:
       
             $ cd vagrant/dev
@@ -102,19 +98,19 @@ will get confused.
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   10. You'll be in the box as the `vagrant` user, but Zenoss development should
-       happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the
-       default password for `zendev` is `zendev`. `sudo su - zendev` to enter
-       the Zenoss environment.
+   9. You'll be in the box as the `vagrant` user, but Zenoss development should
+      happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the
+      default password for `zendev` is `zendev`. `sudo su - zendev` to enter
+      the Zenoss environment.
 
-   11. Optional: Install SSH keys (if you skipped step 6 and 7). Run on the host box:
+   10. Optional: Install SSH keys (if you skipped step 6 and 7). Run on the host box:
 
         cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
 
       Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
       public key.
 
-   12. Set up SSH config. Run on the host box: 
+   11. Set up SSH config. Run on the host box: 
 
         cat <<EOF>> ~/.ssh/config
         Host zendev
@@ -125,9 +121,9 @@ will get confused.
       You will them be able to run "ssh zendev" without specifying user or
       modifying your hosts file.
 
-   13. The source checkouts on your host box are mounted via NFS on the dev
-       box. You can use `git zen` (or just `git`) locally to modify them, or
-       edit them locally.
+   12. The source checkouts on your host box are mounted as shared folders on
+       the dev box. You can use `git zen` (or just `git`) locally to modify
+       them, or edit them locally.
 
 
 [zenv]: https://intranet.zenoss.com/docs/DOC-2401
@@ -247,9 +243,10 @@ Notes
   
         Progress object failure: NS_ERROR_CALL_FAILED
   
-  If so, you need to create a manifest file. Run this:
+  If so, you need to create a manifest file. Run this, where ``BOX_NAME`` is
+  "europa-dev" or "fedora18":
   
-        cd ~/.vagrant.d/boxes/fedora18/virtualbox
+        cd ~/.vagrant.d/boxes/[BOX_NAME]/virtualbox
         openssl sha1 *.vmdk *.ovf > box.mf
   
   Then try again.
