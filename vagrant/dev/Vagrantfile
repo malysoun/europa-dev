@@ -10,14 +10,20 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box     = "europa-dev"
-  config.vm.box_url = "http://vagrant.zendev.org/boxes/europa-dev-base.box"
+  config.vm.box     = "europa-dev-2"
+  config.vm.box_url = "http://vagrant.zendev.org/boxes/europa-dev-base-2.box"
+
+  # Older version without zendev user preconfigured. You will also need to use
+  # the NFS-shared synced /zensrc folder, commented out below
+  #config.vm.box     = "europa-dev"
+  #config.vm.box_url = "http://vagrant.zendev.org/boxes/europa-dev-base.box"
 
   # Comment out the previous 2 entries and uncomment these 3 entries to
   # try the new 64bit fedora base box with a default zendev user. This
   # box does not have a "vagrant" user
   #config.vm.box     = "europa-zendev"
   #config.vm.box_url = "http://vagrant.zendev.org/boxes/europa_zendev_virtualbox.box"
+
   # Uncomment if using a base box with zendev user and without a vagrant
   #config.ssh.username = "zendev"
 
@@ -37,9 +43,13 @@ Vagrant.configure("2") do |config|
   # your network.
   # config.vm.network :public_network
 
-  config.vm.synced_folder "../../src", "/zensrc", 
-                          :extra => 'dmode=775,fmode=775',
-                          :nfs => true
+  config.vm.synced_folder "../../src", "/zensrc", owner:"zendev",
+      group:"zendev", :extra => 'dmode=775,fmode=775'
+
+  ## Uncomment if using europa-dev instead of europa-dev-2 to provision
+  #config.vm.synced_folder "../../src", "/zensrc", 
+  #              :extra => 'dmode=774,fmode=775',
+  #              :nfs => true
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
