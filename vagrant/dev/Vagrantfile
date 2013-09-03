@@ -38,6 +38,12 @@ Vagrant.configure("2") do |config|
   # using a specific IP.
   config.vm.network :private_network, ip: "192.168.33.10"
 
+  # Deal with sort-of bug in fedora networking. We want PEERDNS=no.
+  config.vm.provision :shell, :inline => "
+      echo PEERDNS=no >> /etc/sysconfig/network-scripts/ifcfg-p7p1
+      ifconfig p7p1 down && ifconfig p7p1 up
+  "
+
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
@@ -60,8 +66,11 @@ Vagrant.configure("2") do |config|
     # vb.gui = true
 
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "4096", "--cpus", "4", 
-        "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, 
+        "--memory", "4096", 
+        "--cpus", "4", 
+        "--ioapic", "on", 
+        "--natdnshostresolver1", "on"]
   end
 
   config.vm.provider :vmware_fusion do |fusion,override|
