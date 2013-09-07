@@ -3,7 +3,7 @@ cookbook 'build-essential'
 cookbook 'chef_handler'
 cookbook 'git'
 cookbook 'yum'
-cookbook 'java', git: 'https://github.com/zenoss/java.git'
+cookbook 'java'
 cookbook 'maven', git: 'https://github.com/zenoss/maven.git'
 cookbook 'python', git: 'https://github.com/zenoss/python.git'
 cookbook 'opentsdb', :path => "../../chef/cookbooks/opentsdb"
