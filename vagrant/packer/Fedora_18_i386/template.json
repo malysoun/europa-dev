@@ -1,0 +1,73 @@
+{
+  "provisioners": [
+    {
+      "override": {
+        "virtualbox": {
+          "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+        }
+      },
+      "type": "shell",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/ruby.sh",
+        "scripts/chef.sh",
+ 	"scripts/zenoss-dependencies.sh",
+        "scripts/devtools.sh",
+        "scripts/vagrant.sh",
+        "scripts/virtualbox.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ],
+  "builders": [
+    {
+      "http_directory": "http",
+      "virtualbox_version_file": ".vbox_version",
+      "ssh_port": 22,
+      "iso_url": "http://mirrors.kernel.org/fedora/releases/18/Fedora/i386/iso/Fedora-18-i386-DVD.iso",
+      "iso_checksum": "d4dcf10a2c98a99dca01b96aefc29590",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S sh 'shutdown.sh'",
+      "boot_command": [
+        "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><enter><wait>"
+      ],
+      "ssh_wait_timeout": "10000s",
+      "ssh_password": "vagrant",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "4096"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "4"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--hwvirtex",
+          "on"
+        ]
+      ],
+      "boot_wait": "20s",
+      "headless": true,
+      "ssh_username": "vagrant",
+      "iso_checksum_type": "md5",
+      "guest_os_type": "Fedora",
+      "type": "virtualbox",
+      "disk_size": 10140
+      }
+],
+  "post-processors": [
+      {
+       "type": "vagrant",
+       "output": "europa_F18_i386_{{.Provider}}.box"
+      }
+
+  ]
+}
