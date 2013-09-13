@@ -86,7 +86,8 @@ class Configurations(object):
 
     @staticmethod
     def root():
-        path = os.path.join(__file__, '..', '..', '..', '..', '..', '..')
+        path = os.environ.get("EUROPA_ROOT", None)
+        path = path or os.path.join(__file__, '..', '..', '..', '..', '..', '..')
         path = os.path.realpath(path)
         return path
 
