@@ -5,8 +5,8 @@ __Important: Do not clone this repository. Read on for instructions.__
 
 Requirements
 ------------
-   1. [VirtualBox][] (tested with 4.2.10-16)
-   2. [Vagrant][] (tested with 1.2.2, __will not__ run with 1.1.x)
+   1. [VirtualBox][] (at least version 4.2.18)
+   2. [Vagrant][] (version 1.3.x, __required. Older versions will not work.__)
    3. Early adopters may also need to install the Vagrant [Berkshelf][] plugin:
 
           vagrant plugin install vagrant-berkshelf
@@ -86,7 +86,20 @@ will get confused.
       [sample script](https://github.com/zenoss/europa-dev/blob/develop/europarc.sample) 
       is included with europa-dev.
 
-   8. Start up your dev box.
+   8. Optional: Use NFS instead of VirtualBox shared folders. NFS is much
+      faster and will provide a significant reduction in build time where
+      filesystem operations are numerous (e.g., assembling fat JARs). You will
+      need NFS installed on your host box. Edit `europa/vagrant/dev/Vagrantfile`.  
+      Comment out the existing synced_folder configuration:
+
+          config.vm.synced_folder "../../src", "/zensrc", owner:"zendev",
+              group:"zendev", :mount_options => ['dmode=775','fmode=775']
+
+      And uncomment the NFS version:
+
+          #config.vm.synced_folder "../../src", "/zensrc", :nfs => true
+
+   9. Start up your dev box.
     - VirtualBox:
       
             $ cd vagrant/dev
@@ -98,19 +111,19 @@ will get confused.
             $ vagrant up --provider=vmware_fusion
             $ vagrant ssh
 
-   9. You'll be in the box as the `vagrant` user, but Zenoss development should
-      happen as the `zendev` user. Both are sudoers with `NOPASSWD:ALL`; the
-      default password for `zendev` is `zendev`. `sudo su - zendev` to enter
-      the Zenoss environment.
+   10. This box no longer uses a `vagrant` user; the default username is
+      `zendev`, and all development should happen as the `zendev` user, who
+      has sudo privileges with `NOPASSWD:ALL`; the default password for 
+      `zendev` is `zendev`.
 
-   10. Optional: Install SSH keys (if you skipped step 6 and 7). Run on the host box:
+   11. Optional: Install SSH keys (if you skipped step 6 and 7). Run on the host box:
 
         cat ~/.ssh/id_rsa.pub | ssh zendev@192.168.33.10 "cat >> ~/.ssh/authorized_keys"
 
       Of course, change `id_rsa.pub` to `id_dsa.pub` if that's the file containing your
       public key.
 
-   11. Set up SSH config. Run on the host box: 
+   12. Set up SSH config. Run on the host box: 
 
         cat <<EOF>> ~/.ssh/config
         Host zendev
@@ -121,7 +134,7 @@ will get confused.
       You will them be able to run "ssh zendev" without specifying user or
       modifying your hosts file.
 
-   12. The source checkouts on your host box are mounted as shared folders on
+   13. The source checkouts on your host box are mounted as shared folders on
        the dev box. You can use `git zen` (or just `git`) locally to modify
        them, or edit them locally.
 
@@ -259,6 +272,9 @@ Notes
 
   On Vagrant >= 1.2.5, this may occur without a second box being up (see [open
   issue][]). Applying the [patch][] to Vagrant itself should fix the problem.
+
+  Update: The fix for this issue is included in Vagrant 1.3.0 and above. If
+  you're using the supported version you should not see this.
 
 [open issue]: https://github.com/mitchellh/vagrant/pull/1738
 [patch]: https://github.com/mitchellh/vagrant/commit/ea89b43a06bf65d3ae0fa90924caeb67d62b82d8 

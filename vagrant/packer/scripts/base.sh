@@ -2,6 +2,7 @@
 
 # Enable updates-testing repo
 sed -i "s/enabled=0/enabled=1/" /etc/yum.repos.d/fedora-updates-testing.repo
+yum clean --expire-cache
 
 # Must exclude kernel for now. Otherwise, kernel gets upgraded before reboot,
 # but VirtualBox tools get compiled against the old kernel, so the fresh
