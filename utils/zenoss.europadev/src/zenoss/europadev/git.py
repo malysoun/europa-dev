@@ -216,16 +216,12 @@ class clone(command):
 
     def execute(self, value, config):
         say("git clone {0} -> {1}".format(config.remotepath(), config.rootpath()))
-        try:
-            os.makedirs(os.path.dirname(config.localpath()))
-        except OSError:
-            pass
         result = git("clone", config.remotepath(), config.localpath())
         if result == 0:
-            shell("git flow init -d 2>&1 >/dev/null", cwd=config.localpath())
-            shell("git pull origin develop 2>&1 >/dev/null",
+            shell("git flow init -d 2>&1 >%s" % os.devnull, cwd=config.localpath())
+            shell("git pull origin develop 2>&1 >%s" % os.devnull,
                     cwd=config.localpath())
-            shell("git push -u origin develop 2>&1 >/dev/null", cwd=config.localpath())
+            shell("git push -u origin develop 2>&1 >%s" % os.devnull, cwd=config.localpath())
         return value if result == 0 else 1
 
     def perform(self, args):
