@@ -26,7 +26,7 @@ vagrant plugin install vagrant-berkshelf
 git flow version 2>&1 > NUL
 RESULT=$?
 echo $RESULT
-if [ $RESULT -ge 0 ]; then
+if [ "$RESULT" != "0" ]; then
     GITFLOWTMP=/tmp/gitflow
     git clone --recursive git://github.com/nvie/gitflow.git ${GITFLOWTMP}
     cmd.exe /c "$(msys2win ${GITFLOWTMP})\contrib\msysgit-install.cmd $(msys2win ${MSYS_HOME})"
