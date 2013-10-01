@@ -2,7 +2,7 @@
 
 HERE=${PWD}
 MSYS_HOME=$(find ~/AppData/Local/GitHub -name PortableGit_* -type d)
-DROPBOX_ROOT="https://dl.dropboxusercontent.com/u/784231/windowslibs"
+DOWNLOAD_ROOT="https://github.com/zenoss/europa-dev/raw/windows"
 
 msys2win () {
     echo $(sh -c "cd $1; pwd -W")
@@ -14,9 +14,9 @@ curl -fsSL https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
 pip install virtualenvwrapper
 
 # Install missing libraries
-curl -o ${MSYS_HOME}/bin/getopt.exe ${DROPBOX_ROOT}/getopt.exe
-curl -o ${MSYS_HOME}/bin/libintl3.dll ${DROPBOX_ROOT}/libintl3.dll
-curl -o /usr/bin/mktemp.exe ${DROPBOX_ROOT}/mktemp.exe
+curl -o ${MSYS_HOME}/bin/getopt.exe ${DOWNLOAD_ROOT}/getopt.exe
+curl -o ${MSYS_HOME}/bin/libintl3.dll ${DOWNLOAD_ROOT}/libintl3.dll
+curl -o /usr/bin/mktemp.exe ${DOWNLOAD_ROOT}/mktemp.exe
 
 # Install git-flow
 GITFLOWTMP=/tmp/gitflow
