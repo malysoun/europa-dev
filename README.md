@@ -1,7 +1,7 @@
 Zenoss Europa Development Environment
 =====================================
 
-__Important: Do not clone this repository. Read on for instructions.__
+__Important: Do not clone this repository (yet). Read on for instructions.__
 
 Requirements
 ------------
@@ -19,9 +19,7 @@ Requirements
 
 Installation
 ------------
-NOTE: If you're on OS X with a case-insensitive filesystem, you should create
-a case-sensitive partition or sparse bundle for your source, or Python imports
-will get confused.
+### Linux
 
    1. If you've previously built Zenoss and are running it on the host box on
       which you plan to set up europa-dev, you need to ensure you aren't using
@@ -138,9 +136,48 @@ will get confused.
        the dev box. You can use `git zen` (or just `git`) locally to modify
        them, or edit them locally.
 
+### OS X
+If you have a case-insensitive filesystem, create a separate source partition
+with a case-sensitive filesystem in Disk Utility, and run the Linux
+instructions relative to that root. Otherwise, Python imports that differ only
+in case (of which a couple exist in the product) will get confused.
+
+### Windows
+This is a wild ride. Prepare yourself.
+
+   1. Install [Python][] 2.7.x using the Windows installer. Install it for all
+      users to the default location, C:\Python27. Customize nothing.
+
+   2. In Explorer, right-click on "Computer". Select "Properties", then
+      "Advanced System Settings". Click "Environment Variables". Edit the
+      system variable "Path" (semicolon-delimited) to include C:\Python27 and
+      C:\Python27\Scripts at the end.
+
+   3. Install [GitHub for Windows][]. This will also install .NET if you don't
+      have it already. Log in using your normal GitHub account. Clone any repo
+      to anywhere, which will force SSH keys to be set up properly (you can
+      delete this repo later). Select Tools > Options... and select "Git Bash"
+      as your default shell. Click "Update". Close.
+
+   4. Double-click on "Git Shell" on your desktop. This will open up a window
+      running bash.
+
+   5. Execute:
+
+          curl -fsSL http://github.com
+
+          
+
+
+
+
+
+
 
 [zenv]: https://intranet.zenoss.com/docs/DOC-2401
 [Virtualbox]: https://www.virtualbox.org/
+[GitHub for Windows]: http://windows.github.com
+[Python]: http://python.org/download
 [Vagrant]: http://www.vagrantup.com/
 [Berkshelf]: http://berkshelf.com/
 [git-flow]: https://github.com/nvie/gitflow 
