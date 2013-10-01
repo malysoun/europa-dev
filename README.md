@@ -162,15 +162,17 @@ This is a wild ride. Prepare yourself.
    4. Double-click on "Git Shell" on your desktop. This will open up a window
       running bash.
 
-   5. Execute:
+   5. cd to the directory in which you want a europa environment installed and 
+      execute:
 
-          curl -fsSL http://github.com
+          curl -fsSL https://github.com/zenoss/europa-dev/raw/windows/install.sh | bash
 
-          
+      This script, comparable to the *NIX "go" script, will set up git-flow,
+      virtualenv, vagrant-berkshelf, create a Europa environment, install the
+      development tools package, and clone all the repositories.
 
-
-
-
+   6. Skip to step 4 of the Linux installation instructions. Bear in mind
+      Windows will not allow sharing of folders via NFS, so ignore that part.
 
 
 
