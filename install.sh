@@ -18,6 +18,9 @@ curl -o ${MSYS_HOME}/bin/getopt.exe ${DOWNLOAD_ROOT}/getopt.exe
 curl -o ${MSYS_HOME}/bin/libintl3.dll ${DOWNLOAD_ROOT}/libintl3.dll
 curl -o /usr/bin/mktemp.exe ${DOWNLOAD_ROOT}/mktemp.exe
 
+# Install vagrant-berkshelf
+vagrant plugin install vagrant-berkshelf
+
 # Install git-flow
 GITFLOWTMP=/tmp/gitflow
 git clone --recursive git://github.com/nvie/gitflow.git ${GITFLOWTMP}
