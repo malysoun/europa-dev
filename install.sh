@@ -23,9 +23,12 @@ curl -o /usr/bin/mktemp.exe ${DOWNLOAD_ROOT}/mktemp.exe
 vagrant plugin install vagrant-berkshelf
 
 # Install git-flow
-GITFLOWTMP=/tmp/gitflow
-git clone --recursive git://github.com/nvie/gitflow.git ${GITFLOWTMP}
-cmd.exe /c "$(msys2win ${GITFLOWTMP})\contrib\msysgit-install.cmd $(msys2win ${MSYS_HOME})"
+git flow version 2>&1 > NUL
+if [ "$?" != 0 ]; then
+    GITFLOWTMP=/tmp/gitflow
+    git clone --recursive git://github.com/nvie/gitflow.git ${GITFLOWTMP}
+    cmd.exe /c "$(msys2win ${GITFLOWTMP})\contrib\msysgit-install.cmd $(msys2win ${MSYS_HOME})"
+fi
 
 # Modify .bashrc to include necessary vars
 cat >> ${HOME}/.bashrc << EOF
