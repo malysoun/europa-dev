@@ -97,8 +97,9 @@ class Configurations(object):
         with open(file, 'r') as f:
             for line in f:
                 line = line.strip()
-                c = re.split("\s*,\s*", line)
-                c = Configuration(root, *c)
+                path, repo = re.split("\s*,\s*", line)
+                path = os.path.join(*path.split('/'))
+                c = Configuration(root, path, repo)
                 configs.append(c)
         return configs
 
