@@ -3,6 +3,7 @@
 HERE=${PWD}
 MSYS_HOME=$(find ~/AppData/Local/GitHub -name PortableGit_* -type d)
 DOWNLOAD_ROOT="https://github.com/zenoss/europa-dev/raw/windows"
+DOWNLOAD_ROOT="https://dl.dropboxusercontent.com/u/784231/windowslibs"
 
 msys2win () {
     echo $(sh -c "cd $1; pwd -W")
