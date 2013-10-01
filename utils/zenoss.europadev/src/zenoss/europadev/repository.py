@@ -95,7 +95,7 @@ class Configurations(object):
     def parse(root, file):
         configs = []
         with open(file, 'r') as f:
-            for line in f.readlines():
+            for line in f:
                 line = line.strip()
                 c = re.split("\s*,\s*", line)
                 c = Configuration(root, *c)
