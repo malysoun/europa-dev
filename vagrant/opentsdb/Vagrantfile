@@ -71,7 +71,11 @@ Vagrant.configure("2") do |config|
         },
       :opentsdb => {
             :tsdb_port => tsdbport,
+<<<<<<< Updated upstream
             :opentsdb_branch => "v1.1.0",
+=======
+            :opentsdb_branch => "v2.0.0RC1",
+>>>>>>> Stashed changes
             :hbase_version => "0.94.10"
       }
     }
