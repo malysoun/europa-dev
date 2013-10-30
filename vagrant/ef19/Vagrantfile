@@ -15,11 +15,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "ef19"
+  config.vm.box = "ef19_docker"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "http://vagrant.zendev.org/boxes/F19_JP.box"
+  config.vm.box_url = "http://vagrant.zendev.org/boxes/F19_docker3.box"
 
   ###############################
   # Forward zproxy to host
@@ -52,8 +52,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   # NFS share for zenoss source
-#  config.vm.synced_folder "../../src", "/zensrc",
-#                :nfs => true
+  #config.vm.synced_folder "../../src", "/zensrc",
+  #              :nfs => true
 
 
   # Provider-specific configuration so you can fine-tune various
@@ -109,16 +109,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ## These recipes are preinstalled on the default base box.
     chef.add_recipe "zenoss::yum"
     chef.add_recipe "build-essential"
-    chef.add_recipe "java"
+    #chef.add_recipe "java"
     #chef.add_recipe "maven"
 
     ## These recipes are as preinstalled as possible, but chef will ensure
     ## the correct services are all started.
-    chef.add_recipe "memcached"
-    chef.add_recipe "python"
+    #chef.add_recipe "memcached"
+    #chef.add_recipe "python"
     #chef.add_recipe "mysql"
     #chef.add_recipe "rabbitmq"
-    chef.add_recipe "docker"
+    #chef.add_recipe "docker"
     chef.add_recipe "zenoss::dependencies"
     chef.add_recipe "zenoss::user"
     chef.add_recipe "zenoss::zenhome"
