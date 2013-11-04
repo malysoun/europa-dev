@@ -10,6 +10,7 @@ src/metric-tsdb, git@github.com:zenoss/zenoss.metric.tsdb
 src/zenoss-extjs, git@github.com:zenoss/zenoss-extjs
 src/index-service, git@github.com:zenoss/index-service
 src/zproxy, git@github.com:zenoss/zproxy
+src/zauth-service, git@github.com:zenoss/zauth-service.git
 chef/cookbooks/zenoss, git@github.com:zenoss/zenoss-dev-cookbook.git
 chef/cookbooks/opentsdb, git@github.com:zenoss/opentsdb.git
 src/zenpacks/ZenPacks.zenoss.ApacheMonitor, git@github.com:zenoss/ZenPacks.zenoss.ApacheMonitor
