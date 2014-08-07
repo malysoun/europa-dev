@@ -43,11 +43,11 @@ Installation
    3. __Don't clone this repository directly__. Run this command, which will 
       set up the entire environment in the directory `./europa`:
 
-        $ python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go/install)"
+        $ python -c "$(curl -fsSL https://raw.github.com/malysoun/europa-dev/go/install)"
 
     If you're planning to have a full Resource Manager development environment, run:
 
-        $ EUROPAPRIVATE= python -c "$(curl -fsSL https://raw.github.com/zenoss/europa-dev/go/install)"
+        $ EUROPAPRIVATE= python -c "$(curl -fsSL https://raw.github.com/malysoun/europa-dev/go/install)"
 
     This will verify that several things are installed and try to install them
     (asking for confirmation first) if not, including [VirtualBox][], 
