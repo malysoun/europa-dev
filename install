@@ -6,8 +6,8 @@ import platform
 import textwrap
 
 
-PUBLIC_REPO = "https://github.com/zenoss/europa-dev.git"
-PRIVATE_REPO = "https://github.com/zenoss/europa-dev-internal.git"
+PUBLIC_REPO = "https://github.com/malysoun/europa-dev.git"
+PRIVATE_REPO = "https://github.com/malysoun/europa-dev-internal.git"
 
 PYTHON = sys.executable
 
